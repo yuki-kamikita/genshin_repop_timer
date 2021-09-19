@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,13 +32,30 @@ class _TopPageState extends State<TopPage> {
   int _originalResin = 0;
   int _condensedResin = 0;
 
-  void _changeOriginalResin(int value) {
+  @override
+  void initState() {
+    super.initState();
+    readSharedPreference();
+  }
+
+  void readSharedPreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      int changedOriginalResin = _originalResin + value;
-      if (changedOriginalResin >= 0) {
-        _originalResin = changedOriginalResin;
-      }
+      _originalResin = prefs.getInt('originalResinCount') ?? 0;
     });
+  }
+
+  void _changeOriginalResin(int value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int changedOriginalResin = _originalResin + value;
+    if (changedOriginalResin >= 0) {
+      await prefs.setInt('originalResinCount', changedOriginalResin);
+      setState(() {
+        _originalResin = changedOriginalResin;
+      });
+    } else {
+      Fluttertoast.showToast(msg: "樹脂が足りません");
+    }
   }
 
   void _createCondensedResin() {
