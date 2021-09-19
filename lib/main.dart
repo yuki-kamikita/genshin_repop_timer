@@ -5,109 +5,257 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Genshin Repop Timer',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: TopPage(title: 'Genshin Repop Timer'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+class TopPage extends StatefulWidget {
+  TopPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _TopPageState createState() => _TopPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _TopPageState extends State<TopPage> {
+  int _originalResin = 0;
+  int _condensedResin = 0;
 
-  void _incrementCounter() {
+  void _changeOriginalResin(int value) {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      int changedOriginalResin = _originalResin + value;
+      if (changedOriginalResin >= 0) {
+        _originalResin = changedOriginalResin;
+      }
+    });
+  }
+
+  void _createCondensedResin() {
+    setState(() {
+      if (_condensedResin < 5 && _originalResin >= 40) {
+        _originalResin = _originalResin - 40;
+        _condensedResin++;
+      }
+    });
+  }
+
+  void _useCondensedResin() {
+    setState(() {
+      if (_condensedResin > 0) {
+        _condensedResin--;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: ListView(
+        padding: EdgeInsets.all(5),
+        children: <Widget>[
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.blue[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    '樹脂',
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        '天然樹脂', // 8m
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            _originalResin.toString(),
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                          Text(
+                            '/160',
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                        ]
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _changeOriginalResin(-60);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 16,
+                          ),
+                          child: Text('-60'),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(3),),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _changeOriginalResin(-40);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 16,
+                          ),
+                          child: Text('-40'),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(3),),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _changeOriginalResin(-30);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 16,
+                          ),
+                          child: Text('-30'),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(3),),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _changeOriginalResin(-20);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 16,
+                          ),
+                          child: Text('-20'),
+                        ),
+                      ),
+                      Padding(padding: EdgeInsets.all(3),),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _changeOriginalResin(60);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.grey,
+                            elevation: 16,
+                          ),
+                          child: Text('+60'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+          ),
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.indigo[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                '鉱石', // 3日後の5時
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.purple[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                '聖遺物', // 24h
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.lightBlue[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                '釣り', // 3日後の5時
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.green[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                '参量物質変化器', // 166h
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
+          Card(
+            margin: EdgeInsets.all(5),
+            color: Colors.lightGreen[100],
+            child: Padding(
+              padding: EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                '栽培', // 70h
+                style: TextStyle(
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+// 天然樹脂、濃縮樹脂
+// 三日石（地方ごと）、聖遺物（国ごと）、釣り、変転機
+// 変わったヒルチャール（デフォルトoff）
+// オプションで
+// 表示on/off
+// 通知時間の設定
