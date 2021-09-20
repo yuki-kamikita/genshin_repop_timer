@@ -31,6 +31,7 @@ dependencies:
 
   fluttertoast: ^8.0.8
   shared_preferences: ^2.0.8
+  intl: ^0.17.0 # DateTimeFormat
 
 dev_dependencies:
   flutter_test:
