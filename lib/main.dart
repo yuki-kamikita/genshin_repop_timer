@@ -181,75 +181,15 @@ class _TopPageState extends State<TopPage> {
                   ),
                   Row(
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _changeOriginalResin(-60);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 8,
-                          ),
-                          child: Text('-60'),
-                        ),
-                      ),
+                      _changeResinButton(-60),
                       Padding(padding: EdgeInsets.all(3),),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _changeOriginalResin(-40);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 8,
-                          ),
-                          child: Text('-40'),
-                        ),
-                      ),
+                      _changeResinButton(-40),
                       Padding(padding: EdgeInsets.all(3),),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _changeOriginalResin(-30);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 8,
-                          ),
-                          child: Text('-30'),
-                        ),
-                      ),
+                      _changeResinButton(-30),
                       Padding(padding: EdgeInsets.all(3),),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _changeOriginalResin(-20);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 8,
-                          ),
-                          child: Text('-20'),
-                        ),
-                      ),
+                      _changeResinButton(-20),
                       Padding(padding: EdgeInsets.all(3),),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _changeOriginalResin(60);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.grey,
-                            elevation: 8,
-                          ),
-                          child: Text('+60'),
-                        ),
-                      ),
+                      _changeResinButton(60),
                     ],
                   ),
                 ],
@@ -284,130 +224,10 @@ class _TopPageState extends State<TopPage> {
                               fontSize: 20,
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                ' 蒼風の高地',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'あと${listRepopDay['Windwail']}日',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      savePickDate(DateTime.now(), 'Windwail');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.grey,
-                                      elevation: 8,
-                                    ),
-                                    child: Text('掘った'),
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                ' 望風山地',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'あと${listRepopDay['Stormbearer']}日',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      savePickDate(DateTime.now(), 'Stormbearer');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.grey,
-                                      elevation: 8,
-                                    ),
-                                    child: Text('掘った'),
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                ' 風龍廃墟',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'あと${listRepopDay['Stormterror']}日',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        savePickDate(DateTime.now(), 'Stormterror');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.grey,
-                                        elevation: 8,
-                                      ),
-                                      child: Text('掘った'),
-                                    ),
-                                  ]
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                ' 軽策荘',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Text(
-                                    'あと${listRepopDay['Qingce']}日',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      savePickDate(DateTime.now(), 'Qingce');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.grey,
-                                      elevation: 8,
-                                    ),
-                                    child: Text('掘った'),
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
+                          _stoneRow('蒼風の高地', 'Windwail'),
+                          _stoneRow('望風山地', 'Stormbearer'),
+                          _stoneRow('風龍廃墟', 'Stormterror'),
+                          _stoneRow('軽策荘', 'Qingce'),
                         ],
                       )
                     ),
@@ -426,130 +246,10 @@ class _TopPageState extends State<TopPage> {
                                 fontSize: 20,
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 璃沙郊',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Lisha']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Lisha');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 孤雲閣',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Guyun']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Guyun');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 慶雲頂',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Qingyun']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Qingyun');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 奥蔵山',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Aocang']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Aocang');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
+                            _stoneRow('璃沙郊', 'Lisha'),
+                            _stoneRow('孤雲閣', 'Guyun'),
+                            _stoneRow('慶雲頂', 'Qingyun'),
+                            _stoneRow('奥蔵山', 'Aocang'),
                           ],
                         )
                     ),
@@ -568,161 +268,11 @@ class _TopPageState extends State<TopPage> {
                                 fontSize: 20,
                               ),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 鳴神島',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Narukami']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Narukami');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 神無塚',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Kannazuka']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Kannazuka');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' ヤシオリ島',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Yashiori']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Yashiori');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' 海祇島',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Watatsumi']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Watatsumi');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(
-                                  ' セイライ島',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'あと${listRepopDay['Seirai']}日',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          savePickDate(DateTime.now(), 'Seirai');
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.grey,
-                                          elevation: 8,
-                                        ),
-                                        child: Text('掘った'),
-                                      ),
-                                    ]
-                                ),
-                              ],
-                            ),
+                            _stoneRow('鳴神島', 'Narukami'),
+                            _stoneRow('神無塚', 'Kannazuka'),
+                            _stoneRow('ヤシオリ島', 'Yashiori'),
+                            _stoneRow('海祇島', 'Watatsumi'),
+                            _stoneRow('セイライ島', 'Seirai'),
                           ],
                         )
                     ),
@@ -787,9 +337,69 @@ class _TopPageState extends State<TopPage> {
       ),
     );
   }
+
+  // Layout Components
+  // 天然樹脂の±ボタン
+  Widget _changeResinButton(int increase) {
+    String text = '';
+    if (increase > 0) { text = '+$increase';}
+    else {text = '$increase';}
+    return Expanded(
+      flex: 1,
+      child: ElevatedButton(
+        onPressed: () {
+          _changeOriginalResin(increase);
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Colors.grey,
+          elevation: 8,
+        ),
+        child: Text(text),
+      ),
+    );
+  }
+
+  // 鉱石の中の一行
+  Widget _stoneRow(String areaName, String areaKey) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(
+          ' $areaName',
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        Image.asset('images/icon_crystal.png'),
+        Row(
+            children: <Widget>[
+              Text(
+                'あと${listRepopDay[areaKey]}日',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  savePickDate(DateTime.now(), areaKey);
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.grey,
+                  elevation: 8,
+                ),
+                child: Text('掘った'),
+              ),
+            ]
+        ),
+      ],
+    );
+  }
+
 }
 
 // TODO: リファクタリング
+// modelを別ファイルにする
+// stringファイル作る
 
 // TODO: 天然樹脂、濃縮樹脂
 // TODO: 聖遺物（国ごと）
@@ -801,3 +411,6 @@ class _TopPageState extends State<TopPage> {
 // TODO: アコーディオン
 // TODO: アイコン、画像
 // TODO: 広告
+
+// TODO: 多言語対応
+// TODO: 日本時間以外への対応
