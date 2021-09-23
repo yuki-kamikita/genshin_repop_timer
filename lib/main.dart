@@ -4,7 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import './accordion.dart';
+import 'widget/accordion.dart';
+import 'widget/drawable_text.dart';
 
 void main() {
   runApp(MyApp());
@@ -158,20 +159,30 @@ class _TopPageState extends State<TopPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                 children: <Widget>[
-                  Text(
-                    '樹脂',
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
+                  Row(
+                    children: [
+                      Image.asset('images/Item_Fragile_Resin.png', height: 32),
+                      Text(
+                        '樹脂',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        '天然樹脂', // 8m
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
+                      Row(
+                        children: [
+                          // Image.asset('images/Item_.png', height: 32),
+                          Text(
+                            '天然樹脂', // 8m
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
                       Row(
                         children: <Widget>[
@@ -216,11 +227,16 @@ class _TopPageState extends State<TopPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                 children: <Widget>[
-                  Text(
-                    '鉱石',
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
+                  Row(
+                    children: [
+                      Image.asset('images/Item_Magical_Crystal_Chunk.png', height: 32),
+                      Text(
+                        '鉱石',
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
                   ),
                   Card(
                     margin: EdgeInsets.all(5),
@@ -230,61 +246,76 @@ class _TopPageState extends State<TopPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                         children: <Widget>[
-                          Text(
-                            'モンド',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
+                          Row(
+                            children: [
+                              Image.asset('images/Element_Anemo.png', height: 32),
+                              Text(
+                                'モンド',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
                           ),
-                          _stoneRow('蒼風の高地', 'Windwail', 'crystal'),
-                          _stoneRow('望風山地', 'Stormbearer', 'crystal'),
-                          _stoneRow('風龍廃墟', 'Stormterror', 'crystal'),
-                          _stoneRow('軽策荘', 'Qingce', 'crystal'),
+                          _stoneRow('蒼風の高地', 'Windwail', 'Item_Crystal_Chunk'),
+                          _stoneRow('望風山地', 'Stormbearer', 'Item_Crystal_Chunk'),
+                          _stoneRow('風龍廃墟', 'Stormterror', 'Item_Crystal_Chunk'),
+                          _stoneRow('軽策荘', 'Qingce', 'Item_Crystal_Chunk'),
                         ],
                       )
                     ),
                   ),
                   Card(
                     margin: EdgeInsets.all(5),
-                    color: Colors.brown[100],
+                    color: Colors.orange[100],
                     child: Padding(
                         padding: EdgeInsets.only(left: 5, right: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                           children: <Widget>[
-                            Text(
-                              '璃月',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                            Row(
+                              children: [
+                                Image.asset('images/Element_Geo.png', height: 32),
+                                Text(
+                                  '璃月',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
-                            _stoneRow('璃沙郊', 'Lisha', 'crystal'),
-                            _stoneRow('孤雲閣', 'Guyun', 'crystal'),
-                            _stoneRow('慶雲頂', 'Qingyun', 'crystal'),
-                            _stoneRow('奥蔵山', 'Aocang', 'crystal'),
+                            _stoneRow('璃沙郊', 'Lisha', 'Item_Crystal_Chunk'),
+                            _stoneRow('孤雲閣', 'Guyun', 'Item_Crystal_Chunk'),
+                            _stoneRow('慶雲頂', 'Qingyun', 'Item_Crystal_Chunk'),
+                            _stoneRow('奥蔵山', 'Aocang', 'Item_Crystal_Chunk'),
                           ],
                         )
                     ),
                   ),
                   Card(
                     margin: EdgeInsets.all(5),
-                    color: Colors.yellow[100],
+                    color: Colors.purple[100],
                     child: Padding(
                         padding: EdgeInsets.only(left: 5, right: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                           children: <Widget>[
-                            Text(
-                              '稲妻',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
+                            Row(
+                              children: [
+                                Image.asset('images/Element_Electro.png', height: 32),
+                                Text(
+                                  '稲妻',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
                             ),
-                            _stoneRow('鳴神島', 'Narukami', 'amethyst'),
-                            _stoneRow('神無塚', 'Kannazuka', 'amethyst'),
-                            _stoneRow('ヤシオリ島', 'Yashiori', 'amethyst'),
-                            _stoneRow('海祇島', 'Watatsumi', 'amethyst'),
-                            _stoneRow('セイライ島', 'Seirai', 'amethyst'),
+                            _stoneRow('鳴神島', 'Narukami', 'Item_Amethyst_Lump'),
+                            _stoneRow('神無塚', 'Kannazuka', 'Item_Amethyst_Lump'),
+                            _stoneRow('ヤシオリ島', 'Yashiori', 'Item_Amethyst_Lump'),
+                            _stoneRow('海祇島', 'Watatsumi', 'Item_Amethyst_Lump'),
+                            _stoneRow('セイライ島', 'Seirai', 'Item_Amethyst_Lump'),
                           ],
                         )
                     ),
@@ -295,14 +326,19 @@ class _TopPageState extends State<TopPage> {
           ),
           Card(
             margin: EdgeInsets.all(5),
-            color: Colors.purple[100],
+            color: Colors.deepPurple[100],
             child: Padding(
               padding: EdgeInsets.only(left: 5, right: 5),
-              child: Text(
-                '聖遺物', // 24h
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+              child: Row(
+                children: [
+                  Image.asset('images/Item_Artifact.png', height: 32),
+                  Text(
+                    '聖遺物', // 24h
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -311,11 +347,16 @@ class _TopPageState extends State<TopPage> {
             color: Colors.lightBlue[100],
             child: Padding(
               padding: EdgeInsets.only(left: 5, right: 5),
-              child: Text(
-                '釣り', // 3日後の5時
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+              child: Row(
+                children: [
+                  Image.asset('images/Item_Wilderness_Rod.png', height: 32),
+                  Text(
+                    '釣り', // 3日後の5時
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -324,11 +365,16 @@ class _TopPageState extends State<TopPage> {
             color: Colors.green[100],
             child: Padding(
               padding: EdgeInsets.only(left: 5, right: 5),
-              child: Text(
-                '参量物質変化器', // 166h
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+              child: Row(
+                children: [
+                  Image.asset('images/Item_Parametric_Transformer.png', height: 32),
+                  Text(
+                    '参量物質変化器', // 166h
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -337,11 +383,16 @@ class _TopPageState extends State<TopPage> {
             color: Colors.lightGreen[100],
             child: Padding(
               padding: EdgeInsets.only(left: 5, right: 5),
-              child: Text(
-                '栽培', // 70h
-                style: TextStyle(
-                  fontSize: 24,
-                ),
+              child: Row(
+                children: [
+                  Image.asset('images/Item_Serenitea_Pot.png', height: 32),
+                  Text(
+                    '栽培', // 70h
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -392,7 +443,7 @@ class _TopPageState extends State<TopPage> {
         ),
         Row(
             children: <Widget>[
-              if (listRepopDay[areaKey] == 0) Image.asset('images/icon_$icon.png', height: 32),
+              if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
               Text(
                 'あと${listRepopDay[areaKey]}日',
                 style: TextStyle(
@@ -416,7 +467,7 @@ class _TopPageState extends State<TopPage> {
   }
 
   Widget setIcon(String icon) {
-    return Image.asset('images/icon_$icon.png', height: 32);
+    return Image.asset('images/$icon.png', height: 32);
   }
 
 }
