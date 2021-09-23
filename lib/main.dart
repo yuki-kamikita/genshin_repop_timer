@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import './accordion.dart';
 
 void main() {
   runApp(MyApp());
@@ -224,10 +225,10 @@ class _TopPageState extends State<TopPage> {
                               fontSize: 20,
                             ),
                           ),
-                          _stoneRow('蒼風の高地', 'Windwail'),
-                          _stoneRow('望風山地', 'Stormbearer'),
-                          _stoneRow('風龍廃墟', 'Stormterror'),
-                          _stoneRow('軽策荘', 'Qingce'),
+                          _stoneRow('蒼風の高地', 'Windwail', 'crystal'),
+                          _stoneRow('望風山地', 'Stormbearer', 'crystal'),
+                          _stoneRow('風龍廃墟', 'Stormterror', 'crystal'),
+                          _stoneRow('軽策荘', 'Qingce', 'crystal'),
                         ],
                       )
                     ),
@@ -246,10 +247,10 @@ class _TopPageState extends State<TopPage> {
                                 fontSize: 20,
                               ),
                             ),
-                            _stoneRow('璃沙郊', 'Lisha'),
-                            _stoneRow('孤雲閣', 'Guyun'),
-                            _stoneRow('慶雲頂', 'Qingyun'),
-                            _stoneRow('奥蔵山', 'Aocang'),
+                            _stoneRow('璃沙郊', 'Lisha', 'crystal'),
+                            _stoneRow('孤雲閣', 'Guyun', 'crystal'),
+                            _stoneRow('慶雲頂', 'Qingyun', 'crystal'),
+                            _stoneRow('奥蔵山', 'Aocang', 'crystal'),
                           ],
                         )
                     ),
@@ -268,11 +269,11 @@ class _TopPageState extends State<TopPage> {
                                 fontSize: 20,
                               ),
                             ),
-                            _stoneRow('鳴神島', 'Narukami'),
-                            _stoneRow('神無塚', 'Kannazuka'),
-                            _stoneRow('ヤシオリ島', 'Yashiori'),
-                            _stoneRow('海祇島', 'Watatsumi'),
-                            _stoneRow('セイライ島', 'Seirai'),
+                            _stoneRow('鳴神島', 'Narukami', 'amethyst'),
+                            _stoneRow('神無塚', 'Kannazuka', 'amethyst'),
+                            _stoneRow('ヤシオリ島', 'Yashiori', 'amethyst'),
+                            _stoneRow('海祇島', 'Watatsumi', 'amethyst'),
+                            _stoneRow('セイライ島', 'Seirai', 'amethyst'),
                           ],
                         )
                     ),
@@ -333,6 +334,14 @@ class _TopPageState extends State<TopPage> {
               ),
             ),
           ),
+              Column(children: [
+    Accordion('Section #1',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam bibendum ornare vulputate. Curabitur faucibus condimentum purus quis tristique.'),
+    Accordion('Section #2',
+    'Fusce ex mi, commodo ut bibendum sit amet, faucibus ac felis. Nullam vel accumsan turpis, quis pretium ipsum. Pellentesque tristique, diam at congue viverra, neque dolor suscipit justo, vitae elementum leo sem vel ipsum'),
+    Accordion('Section #3',
+    'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
+    ]),
         ],
       ),
     );
@@ -360,7 +369,7 @@ class _TopPageState extends State<TopPage> {
   }
 
   // 鉱石の中の一行
-  Widget _stoneRow(String areaName, String areaKey) {
+  Widget _stoneRow(String areaName, String areaKey, String icon) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -370,9 +379,9 @@ class _TopPageState extends State<TopPage> {
             fontSize: 20,
           ),
         ),
-        Image.asset('images/icon_crystal.png'),
         Row(
             children: <Widget>[
+              if (listRepopDay[areaKey] == 0) Image.asset('images/icon_$icon.png', height: 32),
               Text(
                 'あと${listRepopDay[areaKey]}日',
                 style: TextStyle(
@@ -393,6 +402,10 @@ class _TopPageState extends State<TopPage> {
         ),
       ],
     );
+  }
+
+  Widget setIcon(String icon) {
+    return Image.asset('images/icon_$icon.png', height: 32);
   }
 
 }
