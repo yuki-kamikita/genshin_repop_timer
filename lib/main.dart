@@ -47,6 +47,25 @@ class _TopPageState extends State<TopPage> {
   int _originalResin = 0;
   int _condensedResin = 0;
 
+  Map<String, int> listRepopDay = {
+    'Windwail' : 0, // 蒼風の高地
+    'Stormbearer': 0, // 望風山地
+    'Stormterror' : 0, // 風龍廃墟
+    'Qingce': 0, // 軽策荘
+    'Lisha': 0, // 璃沙郊
+    'Guyun': 0, // 孤雲閣
+    'Qingyun': 0, // 慶雲頂
+    'Aocang': 0, // 奥蔵山
+    'Narukami': 0, // 鳴神島
+    'Kannazuka': 0, // 神無塚
+    'Yashiori': 0, // ヤシオリ島
+    'Watatsumi': 0, // 海祇島
+    'Seirai': 0, // セイライ島
+  };
+
+  int transformHour = 0;
+
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +92,7 @@ class _TopPageState extends State<TopPage> {
       listRepopDay['Yashiori'] = repopDay(DateTime.parse(prefs.getString('Yashiori') ?? '2021-01-01'), 3);
       listRepopDay['Watatsumi'] = repopDay(DateTime.parse(prefs.getString('Watatsumi') ?? '2021-01-01'), 3);
       listRepopDay['Seirai'] = repopDay(DateTime.parse(prefs.getString('Seirai') ?? '2021-01-01'), 3);
+      transformHour = repopHour(DateTime.parse(prefs.getString('transformed') ?? '2021-01-01'), 166);
     });
   }
 
@@ -106,31 +126,11 @@ class _TopPageState extends State<TopPage> {
     });
   }
 
-  String text = '';
-  Map<String, int> listRepopDay = {
-    'Windwail' : 0, // 蒼風の高地
-    'Stormbearer': 0, // 望風山地
-    'Stormterror' : 0, // 風龍廃墟
-    'Qingce': 0, // 軽策荘
-    'Lisha': 0, // 璃沙郊
-    'Guyun': 0, // 孤雲閣
-    'Qingyun': 0, // 慶雲頂
-    'Aocang': 0, // 奥蔵山
-    'Narukami': 0, // 鳴神島
-    'Kannazuka': 0, // 神無塚
-    'Yashiori': 0, // ヤシオリ島
-    'Watatsumi': 0, // 海祇島
-    'Seirai': 0, // セイライ島
-  };
   void savePickDate(DateTime dateTime, String key) async {
     initializeDateFormatting("ja_JP");
     DateFormat formatter = new DateFormat('M/d(E)', "ja_JP");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(key, dateTime.toString());
-    setState(() {
-      listRepopDay[key] = repopDay(dateTime, 3);
-      // text = "${listDay[key]}日後 ${formatter.format(dateTime.add(Duration(days: 3)))}";
-    });
   }
 
   int repopDay(DateTime pickedDate, int interval) {
@@ -138,8 +138,16 @@ class _TopPageState extends State<TopPage> {
     DateTime popDate = new DateTime(popDateTime.year, popDateTime.month, popDateTime.day);
     final Duration difference = popDate.difference(DateTime.now());
     int day = difference.inDays + 1;
-    if (day < 0) day = 0;
+    if (popDate.isBefore(DateTime.now())) day = 0;
     return day;
+  }
+
+  int repopHour(DateTime pickedDate, int interval) {
+    DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedDate.hour+interval);
+    final Duration difference = popDateTime.difference(DateTime.now());
+    int hour = difference.inHours;
+    if (popDateTime.isBefore(DateTime.now())) hour = 0;
+    return hour;
   }
 
   @override
@@ -365,16 +373,55 @@ class _TopPageState extends State<TopPage> {
             color: Colors.green[100],
             child: Padding(
               padding: EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                children: [
-                  Image.asset('images/Item_Parametric_Transformer.png', height: 32),
-                  Text(
-                    '参量物質変化器', // 166h
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Image.asset('images/Item_Parametric_Transformer.png', height: 32),
+                      Text(
+                        '参量物質変化器', // 166h
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '変換', // 166h
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
+                          Text(
+                            'あと$transformHour時間',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.all(3),),
+                          ElevatedButton(
+                            onPressed: () {
+                              savePickDate(DateTime.now(), 'transformed');
+                              setState(() { transformHour = repopHour(DateTime.now(), 70); });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey,
+                              elevation: 8,
+                            ),
+                            child: Text('変換'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                ]
               ),
             ),
           ),
@@ -450,15 +497,17 @@ class _TopPageState extends State<TopPage> {
                   fontSize: 20,
                 ),
               ),
+              Padding(padding: EdgeInsets.all(3),),
               ElevatedButton(
                 onPressed: () {
                   savePickDate(DateTime.now(), areaKey);
+                  setState(() { listRepopDay[areaKey] = repopDay(DateTime.now(), 3); });
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.grey,
                   elevation: 8,
                 ),
-                child: Text('掘った'),
+                child: Text('掘る'),
               ),
             ]
         ),
