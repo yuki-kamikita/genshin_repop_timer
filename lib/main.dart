@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 import 'widget/accordion.dart';
 import 'widget/drawable_text.dart';
 
@@ -63,8 +65,36 @@ class _TopPageState extends State<TopPage> {
     'Seirai': 0, // セイライ島
   };
 
-  int transformHour = 0;
+  Map<String, tz.TZDateTime> pickedDateTime = {
+    'resin': tz.TZDateTime.now(tz.UTC),
+    'stone': tz.TZDateTime.now(tz.UTC),
+    'artifact': tz.TZDateTime.now(tz.UTC),
+    'fishing': tz.TZDateTime.now(tz.UTC),
+    'transformer': tz.TZDateTime.now(tz.UTC),
+    'cultivation': tz.TZDateTime.now(tz.UTC),
+  };
 
+  // TODO: DataClass作成
+  Map<String, bool> notificationSetting = {
+    'resin': false,
+    'stone': false,
+    'artifact': false,
+    'fishing': false,
+    'transformer': false,
+    'cultivation': false,
+  };
+
+  // TODO: リソースに移動
+  final Map<String, int> notionIdResource = {
+    'resin': 1,
+    'stone': 2,
+    'artifact': 3,
+    'fishing': 4,
+    'transformer': 5,
+    'cultivation': 6
+  };
+
+  int transformHour = 0;
 
   @override
   void initState() {
@@ -74,8 +104,13 @@ class _TopPageState extends State<TopPage> {
 
   void readSharedPreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    pickedDateTime['transformer'] = await getDateTime('transformer');
     setState(() {
       _originalResin = prefs.getInt('originalResinCount') ?? 0;
+      // 通知設定
+      notificationSetting['transformer'] = prefs.getBool('notionTransformer') ?? false;
+
+      // 再出現日
       // for () { // TODO: ループさせる
       //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
       // }
@@ -92,7 +127,7 @@ class _TopPageState extends State<TopPage> {
       listRepopDay['Yashiori'] = repopDay(DateTime.parse(prefs.getString('Yashiori') ?? '2021-01-01'), 3);
       listRepopDay['Watatsumi'] = repopDay(DateTime.parse(prefs.getString('Watatsumi') ?? '2021-01-01'), 3);
       listRepopDay['Seirai'] = repopDay(DateTime.parse(prefs.getString('Seirai') ?? '2021-01-01'), 3);
-      transformHour = repopHour(DateTime.parse(prefs.getString('transformed') ?? '2021-01-01'), 166);
+      transformHour = repopHour(DateTime.parse(prefs.getString('transformer') ?? prefs.getString('transformed') ?? '2021-01-01'), 166); // TODO: transformedあとで消す
     });
   }
 
@@ -107,6 +142,19 @@ class _TopPageState extends State<TopPage> {
     } else {
       Fluttertoast.showToast(msg: "樹脂が足りません");
     }
+  }
+
+  void setBoolean(String key, bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
+  }
+
+  Future<tz.TZDateTime> getDateTime(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String timeString = prefs.getString(key) ?? prefs.getString('transformed') ?? '2021-01-01'; // TODO: transformedあとで消す
+    // DateTime dateTime = DateTime.parse(prefs.getString(key) ?? '2021-01-01');
+    return tz.TZDateTime.parse(tz.UTC, timeString).add(Duration(hours: 9)); // 日本時間に変更
+    // return tz.TZDateTime.from(dateTime, tz.UTC);
   }
 
   void _createCondensedResin() {
@@ -127,6 +175,9 @@ class _TopPageState extends State<TopPage> {
   }
 
   void savePickDate(DateTime dateTime, String key) async {
+    // TODO: DateTimeとTZDateTime使ってるの無駄だから統一したい
+    // TODO: 多言語対応の時にタイムゾーン付きにしたり、UTCで保存したり
+    pickedDateTime[key] = tz.TZDateTime.from(dateTime, tz.UTC);
     initializeDateFormatting("ja_JP");
     DateFormat formatter = new DateFormat('M/d(E)', "ja_JP");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -148,6 +199,43 @@ class _TopPageState extends State<TopPage> {
     int hour = difference.inHours;
     if (popDateTime.isBefore(DateTime.now())) hour = 0;
     return hour;
+  }
+
+  // 通知予約
+  // TODO: この関数の中で石とか変化機とかごとに分岐させて各々時間を作りたい
+  Future<void> createNotification(int notionId, tz.TZDateTime dateTime, String text) {
+    final flnp = FlutterLocalNotificationsPlugin();
+    return flnp.initialize(
+      InitializationSettings(
+        iOS: IOSInitializationSettings(),
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+    ).then((_) => flnp.zonedSchedule(
+      notionId,
+      '原神タイマー',
+      text,
+      dateTime,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          'genshin_repop_timer',
+          '再出現通知',
+          '復活したときの通知',
+        ),
+        iOS: IOSNotificationDetails(),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    ));
+  }
+
+  // 通知on/off
+  changeNotification(bool notionValue, int notionId, tz.TZDateTime dateTime, String text) async {
+    if (notionValue) {
+     createNotification(notionId, dateTime, text);
+    } else {
+      final flnp = FlutterLocalNotificationsPlugin();
+      await flnp.cancel(notionId);
+    }
   }
 
   @override
@@ -377,13 +465,35 @@ class _TopPageState extends State<TopPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
                 children: <Widget>[
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // 均等に配置する
                     children: [
-                      Image.asset('images/Item_Parametric_Transformer.png', height: 32),
-                      Text(
-                        '参量物質変化器', // 166h
-                        style: TextStyle(
-                          fontSize: 24,
-                        ),
+                      Row(
+                        children: [
+                          Image.asset('images/Item_Parametric_Transformer.png', height: 32),
+                          Text(
+                            '参量物質変化器', // 166h
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications,
+                            color: Colors.grey,
+                            size: 28.0,
+                          ),
+                          Switch(
+                            value: notificationSetting['transformer']!,
+                            onChanged: (bool newValue) {
+                              setState(() { notificationSetting['transformer'] = newValue;});
+                              setBoolean('notionTransformer', newValue);
+                              changeNotification(newValue, notionIdResource['transformer']!, pickedDateTime['transformer']!.add(Duration(hours: 166)) ,'参量物質変化器が再使用可能になりました');
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -408,8 +518,9 @@ class _TopPageState extends State<TopPage> {
                           Padding(padding: EdgeInsets.all(3),),
                           ElevatedButton(
                             onPressed: () {
-                              savePickDate(DateTime.now(), 'transformed');
-                              setState(() { transformHour = repopHour(DateTime.now(), 70); });
+                              savePickDate(DateTime.now(), 'transformer');
+                              createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
+                              setState(() { transformHour = repopHour(DateTime.now(), 166); });
                             },
                             style: ElevatedButton.styleFrom(
                               primary: Colors.grey,
@@ -451,6 +562,16 @@ class _TopPageState extends State<TopPage> {
     // Accordion('Section #3',
     // 'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
     // ]),
+    //       ElevatedButton(
+    //         onPressed: () {
+    //           createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
+    //         },
+    //         style: ElevatedButton.styleFrom(
+    //           primary: Colors.grey,
+    //           elevation: 8,
+    //         ),
+    //         child: Text('通知テスト'),
+    //       )
         ],
       ),
     );
