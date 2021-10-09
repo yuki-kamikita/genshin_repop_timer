@@ -100,6 +100,23 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     readSharedPreference();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      readSharedPreference();
+    } else if (state == AppLifecycleState.paused) {
+    } else if (state == AppLifecycleState.detached) {
+    } else if (state == AppLifecycleState.inactive) {
+    }
   }
 
   void readSharedPreference() async {
