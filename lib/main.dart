@@ -45,7 +45,7 @@ class TopPage extends StatefulWidget {
   _TopPageState createState() => _TopPageState();
 }
 
-class _TopPageState extends State<TopPage> {
+class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   int _originalResin = 0;
   int _condensedResin = 0;
 
@@ -104,7 +104,7 @@ class _TopPageState extends State<TopPage> {
 
   void readSharedPreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    pickedDateTime['transformer'] = await getDateTime('transformer');
+    pickedDateTime['transformer'] = await getTZDateTime('transformer');
     setState(() {
       _originalResin = prefs.getInt('originalResinCount') ?? 0;
       // 通知設定
@@ -127,7 +127,7 @@ class _TopPageState extends State<TopPage> {
       listRepopDay['Yashiori'] = repopDay(DateTime.parse(prefs.getString('Yashiori') ?? '2021-01-01'), 3);
       listRepopDay['Watatsumi'] = repopDay(DateTime.parse(prefs.getString('Watatsumi') ?? '2021-01-01'), 3);
       listRepopDay['Seirai'] = repopDay(DateTime.parse(prefs.getString('Seirai') ?? '2021-01-01'), 3);
-      transformHour = repopHour(DateTime.parse(prefs.getString('transformer') ?? prefs.getString('transformed') ?? '2021-01-01'), 166); // TODO: transformedあとで消す
+      transformHour = repopHour(DateTime.parse(prefs.getString('transformer') ?? '2021-01-01'), 166);
     });
   }
 
@@ -149,11 +149,11 @@ class _TopPageState extends State<TopPage> {
     prefs.setBool(key, value);
   }
 
-  Future<tz.TZDateTime> getDateTime(String key) async {
+  Future<tz.TZDateTime> getTZDateTime(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String timeString = prefs.getString(key) ?? prefs.getString('transformed') ?? '2021-01-01'; // TODO: transformedあとで消す
+    String timeString = prefs.getString(key) ?? '2021-01-01';
     // DateTime dateTime = DateTime.parse(prefs.getString(key) ?? '2021-01-01');
-    return tz.TZDateTime.parse(tz.UTC, timeString).add(Duration(hours: 9)); // 日本時間に変更
+    return tz.TZDateTime.parse(tz.UTC, timeString).add(Duration(hours: 9)); // 日本時間に変換
     // return tz.TZDateTime.from(dateTime, tz.UTC);
   }
 
@@ -185,7 +185,7 @@ class _TopPageState extends State<TopPage> {
   }
 
   int repopDay(DateTime pickedDate, int interval) {
-    DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day+interval, pickedDate.hour-5);
+    DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day+interval, pickedDate.hour-5); // 水晶は7時らしいから別枠かな
     DateTime popDate = new DateTime(popDateTime.year, popDateTime.month, popDateTime.day);
     final Duration difference = popDate.difference(DateTime.now());
     int day = difference.inDays + 1;
