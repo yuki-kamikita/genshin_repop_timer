@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'preference_key.dart';
 import 'widget/accordion.dart';
 import 'widget/drawable_text.dart';
 
@@ -66,6 +67,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     'Seirai': 0, // セイライ島
   };
 
+  // 鉱石分けたし、ここも整理しないと
   Map<String, tz.TZDateTime> pickedDateTime = {
     'resin': tz.TZDateTime.now(tz.UTC),
     'stone': tz.TZDateTime.now(tz.UTC),
@@ -125,58 +127,43 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
 
   // 共通関数 //
   void readSharedPreference() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    pickedDateTime['transformer'] = await getTZDateTime('transformer');
-    setState(() {
-      _originalResin = prefs.getInt('originalResinCount') ?? 0;
+    pickedDateTime['transformer'] = await PreferenceKey.transformer.getTZDateTime();
+    setState(() async {
+      _originalResin = await PreferenceKey.originalResinCount.getInt(0);
       // 通知設定
-      notificationSetting['transformer'] = prefs.getBool('notionTransformer') ?? false;
+      notificationSetting['transformer'] = await PreferenceKey.notionTransformer.getBoolean(false);
 
       // 再出現日
       // for () { // TODO: ループさせる
       //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
       // }
-      listRepopDay['Windwail'] = repopDay(DateTime.parse(prefs.getString('Windwail') ?? '2021-01-01'), 3); // TODO: デフォルト値を検討
-      listRepopDay['Stormbearer'] = repopDay(DateTime.parse(prefs.getString('Stormbearer') ?? '2021-01-01'), 3);
-      listRepopDay['Stormterror'] = repopDay(DateTime.parse(prefs.getString('Stormterror') ?? '2021-01-01'), 3);
-      listRepopDay['Qingce'] = repopDay(DateTime.parse(prefs.getString('Qingce') ?? '2021-01-01'), 3);
-      listRepopDay['Lisha'] = repopDay(DateTime.parse(prefs.getString('Lisha') ?? '2021-01-01'), 3);
-      listRepopDay['Guyun'] = repopDay(DateTime.parse(prefs.getString('Guyun') ?? '2021-01-01'), 3);
-      listRepopDay['Qingyun'] = repopDay(DateTime.parse(prefs.getString('Qingyun') ?? '2021-01-01'), 3);
-      listRepopDay['Aocang'] = repopDay(DateTime.parse(prefs.getString('Aocang') ?? '2021-01-01'), 3);
-      listRepopDay['Narukami'] = repopDay(DateTime.parse(prefs.getString('Narukami') ?? '2021-01-01'), 3);
-      listRepopDay['Kannazuka'] = repopDay(DateTime.parse(prefs.getString('Kannazuka') ?? '2021-01-01'), 3);
-      listRepopDay['Yashiori'] = repopDay(DateTime.parse(prefs.getString('Yashiori') ?? '2021-01-01'), 3);
-      listRepopDay['Watatsumi'] = repopDay(DateTime.parse(prefs.getString('Watatsumi') ?? '2021-01-01'), 3);
-      listRepopDay['Seirai'] = repopDay(DateTime.parse(prefs.getString('Seirai') ?? '2021-01-01'), 3);
-      transformHour = repopHour(DateTime.parse(prefs.getString('transformer') ?? '2021-01-01'), 166);
+      listRepopDay['Windwail']    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
+      listRepopDay['Stormbearer'] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
+      listRepopDay['Stormterror'] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
+      listRepopDay['Qingce']      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
+      listRepopDay['Lisha']       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
+      listRepopDay['Guyun']       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
+      listRepopDay['Qingyun']     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
+      listRepopDay['Aocang']      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
+      listRepopDay['Narukami']    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
+      listRepopDay['Kannazuka']   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
+      listRepopDay['Yashiori']    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
+      listRepopDay['Watatsumi']   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
+      listRepopDay['Seirai']      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
+      transformHour = repopHour(await PreferenceKey.transformer.getDateTime(), 166);
     });
   }
 
   void _changeOriginalResin(int value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     int changedOriginalResin = _originalResin + value;
     if (changedOriginalResin >= 0) {
-      await prefs.setInt('originalResinCount', changedOriginalResin);
+      await PreferenceKey.originalResinCount.setInt(changedOriginalResin);
       setState(() {
         _originalResin = changedOriginalResin;
       });
     } else {
       Fluttertoast.showToast(msg: "樹脂が足りません");
     }
-  }
-
-  void setBoolean(String key, bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(key, value);
-  }
-
-  Future<tz.TZDateTime> getTZDateTime(String key) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String timeString = prefs.getString(key) ?? '2021-01-01';
-    // DateTime dateTime = DateTime.parse(prefs.getString(key) ?? '2021-01-01');
-    return tz.TZDateTime.parse(tz.UTC, timeString).add(Duration(hours: 9)); // 日本時間に変換
-    // return tz.TZDateTime.from(dateTime, tz.UTC);
   }
 
   void _createCondensedResin() {
@@ -194,14 +181,6 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
         _condensedResin--;
       }
     });
-  }
-
-  void savePickDate(DateTime dateTime, String key) async {
-    pickedDateTime[key] = tz.TZDateTime.from(dateTime, tz.UTC);
-    initializeDateFormatting("ja_JP");
-    DateFormat formatter = new DateFormat('M/d(E)', "ja_JP");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, dateTime.toString());
   }
 
   int repopDay(DateTime pickedDate, int interval) {
@@ -510,7 +489,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                             value: notificationSetting['transformer']!,
                             onChanged: (bool newValue) {
                               setState(() { notificationSetting['transformer'] = newValue;});
-                              setBoolean('notionTransformer', newValue);
+                              PreferenceKey.notionTransformer.setBoolean(newValue);
                               changeNotification(newValue, notionIdResource['transformer']!, pickedDateTime['transformer']!.add(Duration(hours: 166)) ,'参量物質変化器が再使用可能になりました');
                             },
                           ),
@@ -540,7 +519,8 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                           Padding(padding: EdgeInsets.all(3),),
                           ElevatedButton(
                             onPressed: () {
-                              savePickDate(DateTime.now(), 'transformer');
+                              pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
+                              PreferenceKey.transformer.setDateTime(DateTime.now());
                               createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
                               setState(() { transformHour = repopHour(DateTime.now(), 166); });
                             },
@@ -584,16 +564,16 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     // Accordion('Section #3',
     // 'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
     // ]),
-    //       ElevatedButton(
-    //         onPressed: () {
-    //           createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
-    //         },
-    //         style: ElevatedButton.styleFrom(
-    //           primary: Colors.grey,
-    //           elevation: 8,
-    //         ),
-    //         child: Text('通知テスト'),
-    //       )
+          ElevatedButton(
+            onPressed: () {
+              createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey,
+              elevation: 8,
+            ),
+            child: Text('通知テスト'),
+          )
         ],
       ),
     );
@@ -643,7 +623,6 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
               Padding(padding: EdgeInsets.all(3),),
               ElevatedButton(
                 onPressed: () {
-                  savePickDate(DateTime.now(), areaKey);
                   setState(() { listRepopDay[areaKey] = repopDay(DateTime.now(), 3); });
                 },
                 style: ElevatedButton.styleFrom(
