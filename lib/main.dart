@@ -21,12 +21,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       locale: locale,
-      localizationsDelegates: const [
+      localizationsDelegates: const [ // 何これ
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
+      supportedLocales: const [ // 何これ
         locale,
       ],
       home: TopPage(title: 'Genshin Repop Timer'),
@@ -110,10 +110,10 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
 
   // 共通関数 //
   void readSharedPreference() async {
-    pickedDateTime['transformer'] = await PreferenceKey.transformer.getTZDateTime();
-    _originalResin = await PreferenceKey.originalResinCount.getInt(0);
+    _originalResin = await PreferenceKey.OriginalResinCount.getInt(0);
+
     // 通知設定
-    notificationSetting['transformer'] = await PreferenceKey.notionTransformer.getBoolean(false);
+    notificationSetting['transformer'] = await PreferenceKey.NotionTransformer.getBoolean(false);
 
     // 再出現日
     // for () { // TODO: ループさせる
@@ -132,14 +132,17 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     listRepopDay[PreferenceKey.Yashiori.index]    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
     listRepopDay[PreferenceKey.Watatsumi.index]   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
     listRepopDay[PreferenceKey.Seirai.index]      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
-    transformHour = repopHour(await PreferenceKey.transformer.getDateTime(), 166);
+
+    pickedDateTime['transformer'] = await PreferenceKey.Transformer.getTZDateTime();
+    transformHour = repopHour(await PreferenceKey.Transformer.getDateTime(), 166);
+
     setState(() {});
   }
 
   void _changeOriginalResin(int value) async {
     int changedOriginalResin = _originalResin + value;
     if (changedOriginalResin >= 0) {
-      await PreferenceKey.originalResinCount.setInt(changedOriginalResin);
+      await PreferenceKey.OriginalResinCount.setInt(changedOriginalResin);
       setState(() {
         _originalResin = changedOriginalResin;
       });
@@ -229,74 +232,75 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
       body: ListView(
         padding: EdgeInsets.all(5),
         children: <Widget>[
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.blue[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Image.asset('images/Item_Fragile_Resin.png', height: 32),
-                      Text(
-                        '樹脂',
-                        style: TextStyle(
-                          fontSize: 24,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          // Image.asset('images/Item_.png', height: 32),
-                          Text(
-                            '天然樹脂', // 8m
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            _originalResin.toString(),
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          Text(
-                            '/160',
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                        ]
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      _changeResinButton(-60),
-                      Padding(padding: EdgeInsets.all(3),),
-                      _changeResinButton(-40),
-                      Padding(padding: EdgeInsets.all(3),),
-                      _changeResinButton(-30),
-                      Padding(padding: EdgeInsets.all(3),),
-                      _changeResinButton(-20),
-                      Padding(padding: EdgeInsets.all(3),),
-                      _changeResinButton(60),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // 樹脂 とりあえず要らない
+          // Card(
+          //   margin: EdgeInsets.all(5),
+          //   color: Colors.blue[100],
+          //   child: Padding(
+          //     padding: EdgeInsets.only(left: 5, right: 5),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
+          //       children: <Widget>[
+          //         Row(
+          //           children: [
+          //             Image.asset('images/Item_Fragile_Resin.png', height: 32),
+          //             Text(
+          //               '樹脂',
+          //               style: TextStyle(
+          //                 fontSize: 24,
+          //               ),
+          //             ),
+          //           ],
+          //         ),
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: <Widget>[
+          //             Row(
+          //               children: [
+          //                 // Image.asset('images/Item_.png', height: 32),
+          //                 Text(
+          //                   '天然樹脂', // 8m
+          //                   style: TextStyle(
+          //                     fontSize: 20,
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //             Row(
+          //               children: <Widget>[
+          //                 Text(
+          //                   _originalResin.toString(),
+          //                   style: TextStyle(
+          //                     fontSize: 20,
+          //                   ),
+          //                 ),
+          //                 Text(
+          //                   '/160',
+          //                   style: TextStyle(
+          //                     fontSize: 20,
+          //                   ),
+          //                 ),
+          //               ]
+          //             ),
+          //           ],
+          //         ),
+          //         Row(
+          //           children: [
+          //             _changeResinButton(-60),
+          //             Padding(padding: EdgeInsets.all(3),),
+          //             _changeResinButton(-40),
+          //             Padding(padding: EdgeInsets.all(3),),
+          //             _changeResinButton(-30),
+          //             Padding(padding: EdgeInsets.all(3),),
+          //             _changeResinButton(-20),
+          //             Padding(padding: EdgeInsets.all(3),),
+          //             _changeResinButton(60),
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
           Card(
             margin: EdgeInsets.all(5),
             color: Colors.indigo[100],
@@ -472,7 +476,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                             value: notificationSetting['transformer']!,
                             onChanged: (bool newValue) {
                               setState(() { notificationSetting['transformer'] = newValue;});
-                              PreferenceKey.notionTransformer.setBoolean(newValue);
+                              PreferenceKey.NotionTransformer.setBoolean(newValue);
                               changeNotification(newValue, notionIdResource['transformer']!, pickedDateTime['transformer']!.add(Duration(hours: 166)) ,'参量物質変化器が再使用可能になりました');
                             },
                           ),
@@ -503,7 +507,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                           ElevatedButton(
                             onPressed: () {
                               pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
-                              PreferenceKey.transformer.setDateTime(DateTime.now());
+                              PreferenceKey.Transformer.setDateTime(DateTime.now());
                               createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
                               setState(() { transformHour = repopHour(DateTime.now(), 166); });
                             },
@@ -547,16 +551,16 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     // Accordion('Section #3',
     // 'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
     // ]),
-          ElevatedButton(
-            onPressed: () {
-              createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
-            },
-            style: ElevatedButton.styleFrom(
-              primary: Colors.grey,
-              elevation: 8,
-            ),
-            child: Text('通知テスト'),
-          )
+    //       ElevatedButton(
+    //         onPressed: () {
+    //           createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
+    //         },
+    //         style: ElevatedButton.styleFrom(
+    //           primary: Colors.grey,
+    //           elevation: 8,
+    //         ),
+    //         child: Text('通知テスト'),
+    //       )
         ],
       ),
     );
