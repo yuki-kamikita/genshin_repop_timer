@@ -4,6 +4,8 @@ import 'package:timezone/timezone.dart' as tz;
 /// SharedPreferencesを一元管理
 ///
 /// 参考：https://blog.dalt.me/2356
+/// TODO: ここのkeyをPreference以外の用途でも使っちゃってるけどどうしようかなぁ
+/// TODO: あと日本語とも連携させたいけど、ここで良いのか？？
 enum PreferenceKey {
   originalResinCount,
   Windwail,
@@ -19,6 +21,7 @@ enum PreferenceKey {
   Yashiori,
   Watatsumi,
   Seirai,
+  Tsurumi,
   transformer,
   notionTransformer
 }

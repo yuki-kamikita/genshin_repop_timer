@@ -48,21 +48,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   int _originalResin = 0;
   int _condensedResin = 0;
 
-  Map<String, int> listRepopDay = {
-    'Windwail' : 0, // 蒼風の高地
-    'Stormbearer': 0, // 望風山地
-    'Stormterror' : 0, // 風龍廃墟
-    'Qingce': 0, // 軽策荘
-    'Lisha': 0, // 璃沙郊
-    'Guyun': 0, // 孤雲閣
-    'Qingyun': 0, // 慶雲頂
-    'Aocang': 0, // 奥蔵山
-    'Narukami': 0, // 鳴神島
-    'Kannazuka': 0, // 神無塚
-    'Yashiori': 0, // ヤシオリ島
-    'Watatsumi': 0, // 海祇島
-    'Seirai': 0, // セイライ島
-  };
+  List<int> listRepopDay = List.filled(PreferenceKey.values.length, 0);
 
   // 鉱石分けたし、ここも整理しないと
   Map<String, tz.TZDateTime> pickedDateTime = {
@@ -133,19 +119,19 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     // for () { // TODO: ループさせる
     //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
     // }
-    listRepopDay['Windwail']    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
-    listRepopDay['Stormbearer'] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
-    listRepopDay['Stormterror'] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
-    listRepopDay['Qingce']      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
-    listRepopDay['Lisha']       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
-    listRepopDay['Guyun']       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
-    listRepopDay['Qingyun']     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
-    listRepopDay['Aocang']      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
-    listRepopDay['Narukami']    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
-    listRepopDay['Kannazuka']   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
-    listRepopDay['Yashiori']    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
-    listRepopDay['Watatsumi']   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
-    listRepopDay['Seirai']      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Windwail.index]    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
+    listRepopDay[PreferenceKey.Stormbearer.index] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Stormterror.index] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Qingce.index]      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Lisha.index]       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Guyun.index]       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Qingyun.index]     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Aocang.index]      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Narukami.index]    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Kannazuka.index]   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Yashiori.index]    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Watatsumi.index]   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
+    listRepopDay[PreferenceKey.Seirai.index]      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
     transformHour = repopHour(await PreferenceKey.transformer.getDateTime(), 166);
     setState(() {});
   }
@@ -349,10 +335,10 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                               ),
                             ],
                           ),
-                          _stoneRow('蒼風の高地', 'Windwail', 'Item_Crystal_Chunk'),
-                          _stoneRow('望風山地', 'Stormbearer', 'Item_Crystal_Chunk'),
-                          _stoneRow('風龍廃墟', 'Stormterror', 'Item_Crystal_Chunk'),
-                          _stoneRow('軽策荘', 'Qingce', 'Item_Crystal_Chunk'),
+                          _stoneRow('蒼風の高地', PreferenceKey.Windwail.index, 'Item_Crystal_Chunk'),
+                          _stoneRow('望風山地', PreferenceKey.Stormbearer.index, 'Item_Crystal_Chunk'),
+                          _stoneRow('風龍廃墟', PreferenceKey.Stormterror.index, 'Item_Crystal_Chunk'),
+                          _stoneRow('軽策荘', PreferenceKey.Qingce.index, 'Item_Crystal_Chunk'),
                         ],
                       )
                     ),
@@ -376,10 +362,10 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                                 ),
                               ],
                             ),
-                            _stoneRow('璃沙郊', 'Lisha', 'Item_Crystal_Chunk'),
-                            _stoneRow('孤雲閣', 'Guyun', 'Item_Crystal_Chunk'),
-                            _stoneRow('慶雲頂', 'Qingyun', 'Item_Crystal_Chunk'),
-                            _stoneRow('奥蔵山', 'Aocang', 'Item_Crystal_Chunk'),
+                            _stoneRow('璃沙郊', PreferenceKey.Lisha.index, 'Item_Crystal_Chunk'),
+                            _stoneRow('孤雲閣', PreferenceKey.Guyun.index, 'Item_Crystal_Chunk'),
+                            _stoneRow('慶雲頂', PreferenceKey.Qingyun.index, 'Item_Crystal_Chunk'),
+                            _stoneRow('奥蔵山', PreferenceKey.Aocang.index, 'Item_Crystal_Chunk'),
                           ],
                         )
                     ),
@@ -403,11 +389,12 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                                 ),
                               ],
                             ),
-                            _stoneRow('鳴神島', 'Narukami', 'Item_Amethyst_Lump'),
-                            _stoneRow('神無塚', 'Kannazuka', 'Item_Amethyst_Lump'),
-                            _stoneRow('ヤシオリ島', 'Yashiori', 'Item_Amethyst_Lump'),
-                            _stoneRow('海祇島', 'Watatsumi', 'Item_Amethyst_Lump'),
-                            _stoneRow('セイライ島', 'Seirai', 'Item_Amethyst_Lump'),
+                            _stoneRow('鳴神島', PreferenceKey.Narukami.index, 'Item_Amethyst_Lump'),
+                            _stoneRow('神無塚', PreferenceKey.Kannazuka.index, 'Item_Amethyst_Lump'),
+                            _stoneRow('ヤシオリ島', PreferenceKey.Yashiori.index, 'Item_Amethyst_Lump'),
+                            _stoneRow('海祇島', PreferenceKey.Watatsumi.index, 'Item_Amethyst_Lump'),
+                            _stoneRow('セイライ島', PreferenceKey.Seirai.index, 'Item_Amethyst_Lump'),
+                            _stoneRow('鶴観', PreferenceKey.Tsurumi.index, 'Item_Amethyst_Lump'),
                           ],
                         )
                     ),
@@ -597,7 +584,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   }
 
   // 鉱石の中の一行
-  Widget _stoneRow(String areaName, String areaKey, String icon) {
+  Widget _stoneRow(String areaName, int areaIndex, String icon) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -609,9 +596,9 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
         ),
         Row(
             children: <Widget>[
-              if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
+              if (listRepopDay[areaIndex] == 0) Image.asset('images/$icon.png', height: 32),
               Text(
-                'あと${listRepopDay[areaKey]}日',
+                'あと${listRepopDay[areaIndex]}日',
                 style: TextStyle(
                   fontSize: 20,
                 ),
@@ -619,7 +606,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
               Padding(padding: EdgeInsets.all(3),),
               ElevatedButton(
                 onPressed: () {
-                  setState(() { listRepopDay[areaKey] = repopDay(DateTime.now(), 3); });
+                  setState(() { listRepopDay[areaIndex] = repopDay(DateTime.now(), 3); });
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.grey,
