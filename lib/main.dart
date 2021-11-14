@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'preference_key.dart';
@@ -128,30 +125,29 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   // 共通関数 //
   void readSharedPreference() async {
     pickedDateTime['transformer'] = await PreferenceKey.transformer.getTZDateTime();
-    setState(() async {
-      _originalResin = await PreferenceKey.originalResinCount.getInt(0);
-      // 通知設定
-      notificationSetting['transformer'] = await PreferenceKey.notionTransformer.getBoolean(false);
+    _originalResin = await PreferenceKey.originalResinCount.getInt(0);
+    // 通知設定
+    notificationSetting['transformer'] = await PreferenceKey.notionTransformer.getBoolean(false);
 
-      // 再出現日
-      // for () { // TODO: ループさせる
-      //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
-      // }
-      listRepopDay['Windwail']    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
-      listRepopDay['Stormbearer'] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
-      listRepopDay['Stormterror'] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
-      listRepopDay['Qingce']      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
-      listRepopDay['Lisha']       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
-      listRepopDay['Guyun']       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
-      listRepopDay['Qingyun']     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
-      listRepopDay['Aocang']      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
-      listRepopDay['Narukami']    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
-      listRepopDay['Kannazuka']   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
-      listRepopDay['Yashiori']    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
-      listRepopDay['Watatsumi']   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
-      listRepopDay['Seirai']      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
-      transformHour = repopHour(await PreferenceKey.transformer.getDateTime(), 166);
-    });
+    // 再出現日
+    // for () { // TODO: ループさせる
+    //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
+    // }
+    listRepopDay['Windwail']    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
+    listRepopDay['Stormbearer'] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
+    listRepopDay['Stormterror'] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
+    listRepopDay['Qingce']      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
+    listRepopDay['Lisha']       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
+    listRepopDay['Guyun']       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
+    listRepopDay['Qingyun']     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
+    listRepopDay['Aocang']      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
+    listRepopDay['Narukami']    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
+    listRepopDay['Kannazuka']   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
+    listRepopDay['Yashiori']    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
+    listRepopDay['Watatsumi']   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
+    listRepopDay['Seirai']      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
+    transformHour = repopHour(await PreferenceKey.transformer.getDateTime(), 166);
+    setState(() {});
   }
 
   void _changeOriginalResin(int value) async {
