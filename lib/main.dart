@@ -46,6 +46,7 @@ class TopPage extends StatefulWidget {
 }
 
 class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
+  // 変数定義 //
   int _originalResin = 0;
   int _condensedResin = 0;
 
@@ -96,6 +97,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
 
   int transformHour = 0;
 
+  // lifecycle //
   @override
   void initState() {
     super.initState();
@@ -109,16 +111,19 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  // LifeCycle
+  // https://gaprot.jp/2021/09/14/flutter-lifecycle/
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       readSharedPreference();
-    } else if (state == AppLifecycleState.paused) {
-    } else if (state == AppLifecycleState.detached) {
-    } else if (state == AppLifecycleState.inactive) {
+    // } else if (state == AppLifecycleState.paused) {
+    // } else if (state == AppLifecycleState.detached) {
+    // } else if (state == AppLifecycleState.inactive) {
     }
   }
 
+  // 共通関数 //
   void readSharedPreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     pickedDateTime['transformer'] = await getTZDateTime('transformer');
@@ -192,8 +197,6 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
   }
 
   void savePickDate(DateTime dateTime, String key) async {
-    // TODO: DateTimeとTZDateTime使ってるの無駄だから統一したい
-    // TODO: 多言語対応の時にタイムゾーン付きにしたり、UTCで保存したり
     pickedDateTime[key] = tz.TZDateTime.from(dateTime, tz.UTC);
     initializeDateFormatting("ja_JP");
     DateFormat formatter = new DateFormat('M/d(E)', "ja_JP");
@@ -255,6 +258,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     }
   }
 
+  // 画面レイアウト //
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -527,6 +531,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
                         children: [
                           // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
                           Text(
+                            // remainingTime(),
                             'あと$transformHour時間',
                             style: TextStyle(
                               fontSize: 20,
@@ -594,7 +599,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
     );
   }
 
-  // Layout Components
+  // レイアウトコンポーネント //
   // 天然樹脂の±ボタン
   Widget _changeResinButton(int increase) {
     String text = '';
@@ -669,9 +674,7 @@ class _TopPageState extends State<TopPage> with WidgetsBindingObserver {
 // TODO: 変転機
 // TODO: 栽培
 
-// TODO: 通知
 // TODO: アコーディオン
-// TODO: アイコン、画像
 // TODO: 広告
 
 // TODO: 多言語対応
