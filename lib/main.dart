@@ -33,17 +33,19 @@ class MyApp extends StatelessWidget {
 
 
 // TODO: リファクタリング
+// RiverpodでViewModelみたいな状態管理をする
 // modelを別ファイルにする
 // stringファイル作る
 
-// TODO: 天然樹脂、濃縮樹脂
 // TODO: 聖遺物（国ごと）
 // TODO: 釣り
-// TODO: 変転機
 // TODO: 栽培
+// TODO: 派遣
+// TODO: ポケットワープポイント
 
-// TODO: アコーディオン
 // TODO: 広告
 
-// TODO: 多言語対応
-// TODO: 日本時間以外への対応
+// TODO: 編集
+
+// 多言語対応
+// 日本時間以外への対応

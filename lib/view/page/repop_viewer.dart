@@ -53,7 +53,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'cultivation': 6
   };
 
-  int transformHour = 0;
+  String transformTime = "";
 
   // lifecycle //
   @override
@@ -92,22 +92,12 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     // for () { // TODO: ループさせる
     //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
     // }
-    listRepopDay[PreferenceKey.Windwail.index]    = repopDay(await PreferenceKey.Windwail.getDateTime(), 3); // TODO: デフォルト値を検討
-    listRepopDay[PreferenceKey.Stormbearer.index] = repopDay(await PreferenceKey.Stormbearer.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Stormterror.index] = repopDay(await PreferenceKey.Stormterror.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Qingce.index]      = repopDay(await PreferenceKey.Qingce.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Lisha.index]       = repopDay(await PreferenceKey.Lisha.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Guyun.index]       = repopDay(await PreferenceKey.Guyun.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Qingyun.index]     = repopDay(await PreferenceKey.Qingyun.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Aocang.index]      = repopDay(await PreferenceKey.Aocang.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Narukami.index]    = repopDay(await PreferenceKey.Narukami.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Kannazuka.index]   = repopDay(await PreferenceKey.Kannazuka.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Yashiori.index]    = repopDay(await PreferenceKey.Yashiori.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Watatsumi.index]   = repopDay(await PreferenceKey.Watatsumi.getDateTime(), 3);
-    listRepopDay[PreferenceKey.Seirai.index]      = repopDay(await PreferenceKey.Seirai.getDateTime(), 3);
+    for (var i = 0; i < 13; i++) { // 鉱石上詰め
+      listRepopDay[i] = repopDay(await PreferenceKey.values[i].getDateTime(), 3, 7);
+    }
 
     pickedDateTime['transformer'] = await PreferenceKey.Transformer.getTZDateTime();
-    transformHour = repopHour(await PreferenceKey.Transformer.getDateTime(), 166);
+    transformTime = repopTime(await PreferenceKey.Transformer.getDateTime(), 166);
 
     setState(() {});
   }
@@ -124,38 +114,34 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     }
   }
 
-  void _createCondensedResin() {
-    setState(() {
-      if (_condensedResin < 5 && _originalResin >= 40) {
-        _originalResin = _originalResin - 40;
-        _condensedResin++;
-      }
-    });
-  }
-
-  void _useCondensedResin() {
-    setState(() {
-      if (_condensedResin > 0) {
-        _condensedResin--;
-      }
-    });
-  }
-
-  int repopDay(DateTime pickedDate, int interval) {
-    DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day+interval, pickedDate.hour-5); // 水晶は7時らしいから別枠かな
+  /// 再出現日
+  /// @param
+  /// pickedDate: 掘った日時
+  /// interval:   再出現までの日数
+  /// popTime:    再出現する時間
+  /// @return:    再出現までの残り時間
+  int repopDay(DateTime pickedDate, int interval, int popTime) {
+    DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day+interval, pickedDate.hour-popTime);
     DateTime popDate = new DateTime(popDateTime.year, popDateTime.month, popDateTime.day);
-    final Duration difference = popDate.difference(DateTime.now());
+    final Duration difference = popDate.difference(DateTime.now().add(Duration(hours: popTime) * -1));
     int day = difference.inDays + 1;
     if (popDate.isBefore(DateTime.now())) day = 0;
     return day;
   }
 
-  int repopHour(DateTime pickedDate, int interval) {
+  String repopTime(DateTime pickedDate, int interval) {
     DateTime popDateTime = new DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedDate.hour+interval);
     final Duration difference = popDateTime.difference(DateTime.now());
     int hour = difference.inHours;
-    if (popDateTime.isBefore(DateTime.now())) hour = 0;
-    return hour;
+    int minute = difference.inMinutes;
+    // if (popDateTime.isBefore(DateTime.now())) hour = 0;
+    String remainTime = "0分";
+    if (hour > 0) {
+      remainTime = "$hour時間";
+    } else if (minute > 0){
+      remainTime = "$minute分";
+    }
+    return remainTime;
   }
 
   // 通知予約
@@ -471,7 +457,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
                             // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
                             Text(
                               // remainingTime(),
-                              'あと$transformHour時間',
+                              'あと$transformTime',
                               style: TextStyle(
                                 fontSize: 20,
                               ),
@@ -482,7 +468,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
                                 pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
                                 PreferenceKey.Transformer.setDateTime(DateTime.now());
                                 createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
-                                setState(() { transformHour = repopHour(DateTime.now(), 166); });
+                                setState(() { transformTime = repopTime(DateTime.now(), 166); });
                               },
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.grey,
@@ -583,7 +569,10 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               Padding(padding: EdgeInsets.all(3),),
               ElevatedButton(
                 onPressed: () {
-                  setState(() { listRepopDay[areaIndex] = repopDay(DateTime.now(), 3); });
+                  setState(() {
+                    PreferenceKey.values[areaIndex].setDateTime(DateTime.now());
+                    listRepopDay[areaIndex] = repopDay(DateTime.now(), 3, 7);
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.grey,
@@ -596,9 +585,9 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
       ],
     );
   }
-
-  Widget setIcon(String icon) {
-    return Image.asset('images/$icon.png', height: 32);
-  }
+  //
+  // Widget setIcon(String icon) {
+  //   return Image.asset('images/$icon.png', height: 32);
+  // }
 
 }

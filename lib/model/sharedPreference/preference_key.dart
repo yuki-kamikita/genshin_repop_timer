@@ -8,7 +8,6 @@ import 'package:timezone/timezone.dart' as tz;
 /// TODO: あと日本語とも連携させたいけど、ここで良いのか？？
 /// 時間と通知の有無しか保存してないから、その二つに分けておけば十分か？
 enum PreferenceKey {
-  OriginalResinCount, // 天然樹脂（使ってない）
   Windwail,    // 蒼風の高地
   Stormbearer, // 望風山地
   Stormterror, // 風龍廃墟
@@ -23,7 +22,8 @@ enum PreferenceKey {
   Watatsumi,   // 海祇島
   Seirai,      // セイライ島
   Tsurumi,     // 鶴観
-  Transformer, // 参量物質変化器
+  // OriginalResinCount, // 天然樹脂（使ってない）
+  Transformer, // 参量物質変化器k
   NotionTransformer // 変化器の通知 別のとこに分けたい
 }
 
