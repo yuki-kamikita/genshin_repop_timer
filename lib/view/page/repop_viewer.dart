@@ -18,8 +18,8 @@ class RepopViewerPage extends StatefulWidget {
 
 class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingObserver {
   // 変数定義 //
-  int _originalResin = 0;
-  int _condensedResin = 0;
+  // int _originalResin = 0;
+  // int _condensedResin = 0;
 
   List<int> listRepopDay = List.filled(PreferenceKey.values.length, 0);
 
@@ -83,7 +83,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   // 共通関数 //
   void readSharedPreference() async {
-    _originalResin = await PreferenceKey.OriginalResinCount.getInt(0);
+    // _originalResin = await PreferenceKey.OriginalResinCount.getInt(0);
 
     // 通知設定
     notificationSetting['transformer'] = await PreferenceKey.NotionTransformer.getBoolean(false);
@@ -102,17 +102,17 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     setState(() {});
   }
 
-  void _changeOriginalResin(int value) async {
-    int changedOriginalResin = _originalResin + value;
-    if (changedOriginalResin >= 0) {
-      await PreferenceKey.OriginalResinCount.setInt(changedOriginalResin);
-      setState(() {
-        _originalResin = changedOriginalResin;
-      });
-    } else {
-      Fluttertoast.showToast(msg: "樹脂が足りません");
-    }
-  }
+  // void _changeOriginalResin(int value) async {
+  //   int changedOriginalResin = _originalResin + value;
+  //   if (changedOriginalResin >= 0) {
+  //     await PreferenceKey.OriginalResinCount.setInt(changedOriginalResin);
+  //     setState(() {
+  //       _originalResin = changedOriginalResin;
+  //     });
+  //   } else {
+  //     Fluttertoast.showToast(msg: "樹脂が足りません");
+  //   }
+  // }
 
   /// 再出現日
   /// @param
@@ -527,24 +527,24 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   // レイアウトコンポーネント //
   // 天然樹脂の±ボタン
-  Widget _changeResinButton(int increase) {
-    String text = '';
-    if (increase > 0) { text = '+$increase';}
-    else {text = '$increase';}
-    return Expanded(
-      flex: 1,
-      child: ElevatedButton(
-        onPressed: () {
-          _changeOriginalResin(increase);
-        },
-        style: ElevatedButton.styleFrom(
-          primary: Colors.grey,
-          elevation: 8,
-        ),
-        child: Text(text),
-      ),
-    );
-  }
+  // Widget _changeResinButton(int increase) {
+  //   String text = '';
+  //   if (increase > 0) { text = '+$increase';}
+  //   else {text = '$increase';}
+  //   return Expanded(
+  //     flex: 1,
+  //     child: ElevatedButton(
+  //       onPressed: () {
+  //         _changeOriginalResin(increase);
+  //       },
+  //       style: ElevatedButton.styleFrom(
+  //         primary: Colors.grey,
+  //         elevation: 8,
+  //       ),
+  //       child: Text(text),
+  //     ),
+  //   );
+  // }
 
   // 鉱石の中の一行
   Widget _stoneRow(String areaName, int areaIndex, String icon) {
