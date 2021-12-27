@@ -23,7 +23,7 @@ enum PreferenceKey {
   Seirai,      // セイライ島
   Tsurumi,     // 鶴観
   // OriginalResinCount, // 天然樹脂（使ってない）
-  Transformer, // 参量物質変化器k
+  Transformer, // 参量物質変化器
   NotionTransformer // 変化器の通知 別のとこに分けたい
 }
 

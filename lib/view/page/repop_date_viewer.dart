@@ -144,6 +144,27 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     return remainTime;
   }
 
+  /// 現状鉱石専用
+  Future<void> editPickDate(BuildContext context, int areaIndex) async {
+    // TODO: showDateTimePicker作ろっかなぁ
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().add(new Duration(days: -3)),
+        lastDate: DateTime.now()
+    ) ?? DateTime.now();
+    // TimeOfDay? time = await showTimePicker(
+    //   context: context,
+    //   initialTime: TimeOfDay.now()
+    // );
+    picked = picked.add(new Duration(hours: 12)); // 0時だと前日扱いなので適当に12時にでもしとく
+    setState(() {
+      // Fluttertoast.showToast(msg: "$picked");
+      PreferenceKey.values[areaIndex].setDateTime(picked);
+      listRepopDay[areaIndex] = repopDay(picked, 3, 7);
+    });
+  }
+
   // 通知予約
   // TODO: この関数の中で石とか変化機とかごとに分岐させて各々時間を作りたい
   Future<void> createNotification(int notionId, tz.TZDateTime dateTime, String text) {
@@ -191,75 +212,6 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
       body: ListView(
         padding: EdgeInsets.all(5),
         children: <Widget>[
-          // 樹脂 とりあえず要らない
-          // Card(
-          //   margin: EdgeInsets.all(5),
-          //   color: Colors.blue[100],
-          //   child: Padding(
-          //     padding: EdgeInsets.only(left: 5, right: 5),
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-          //       children: <Widget>[
-          //         Row(
-          //           children: [
-          //             Image.asset('images/Item_Fragile_Resin.png', height: 32),
-          //             Text(
-          //               '樹脂',
-          //               style: TextStyle(
-          //                 fontSize: 24,
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //         Row(
-          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //           children: <Widget>[
-          //             Row(
-          //               children: [
-          //                 // Image.asset('images/Item_.png', height: 32),
-          //                 Text(
-          //                   '天然樹脂', // 8m
-          //                   style: TextStyle(
-          //                     fontSize: 20,
-          //                   ),
-          //                 ),
-          //               ],
-          //             ),
-          //             Row(
-          //               children: <Widget>[
-          //                 Text(
-          //                   _originalResin.toString(),
-          //                   style: TextStyle(
-          //                     fontSize: 20,
-          //                   ),
-          //                 ),
-          //                 Text(
-          //                   '/160',
-          //                   style: TextStyle(
-          //                     fontSize: 20,
-          //                   ),
-          //                 ),
-          //               ]
-          //             ),
-          //           ],
-          //         ),
-          //         Row(
-          //           children: [
-          //             _changeResinButton(-60),
-          //             Padding(padding: EdgeInsets.all(3),),
-          //             _changeResinButton(-40),
-          //             Padding(padding: EdgeInsets.all(3),),
-          //             _changeResinButton(-30),
-          //             Padding(padding: EdgeInsets.all(3),),
-          //             _changeResinButton(-20),
-          //             Padding(padding: EdgeInsets.all(3),),
-          //             _changeResinButton(60),
-          //           ],
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
           Card(
             margin: EdgeInsets.all(5),
             color: Colors.indigo[100],
@@ -560,10 +512,15 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
         Row(
             children: <Widget>[
               if (listRepopDay[areaIndex] == 0) Image.asset('images/$icon.png', height: 32),
-              Text(
-                'あと${listRepopDay[areaIndex]}日',
-                style: TextStyle(
-                  fontSize: 20,
+              GestureDetector(
+                onTap: () {
+                  editPickDate(context, areaIndex);
+                },
+                child: Text(
+                  'あと${listRepopDay[areaIndex]}日',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Padding(padding: EdgeInsets.all(3),),
