@@ -89,9 +89,6 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     notificationSetting['transformer'] = await PreferenceKey.NotionTransformer.getBoolean(false);
 
     // 再出現日
-    // for () { // TODO: ループさせる
-    //   listRepopDay[key] = repopDay(DateTime.parse(prefs.getString(key) ?? ''), 3);
-    // }
     for (var i = 0; i < 13; i++) { // 鉱石上詰め
       listRepopDay[i] = repopDay(await PreferenceKey.values[i].getDateTime(), 3, 7);
     }
@@ -101,18 +98,6 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
     setState(() {});
   }
-
-  // void _changeOriginalResin(int value) async {
-  //   int changedOriginalResin = _originalResin + value;
-  //   if (changedOriginalResin >= 0) {
-  //     await PreferenceKey.OriginalResinCount.setInt(changedOriginalResin);
-  //     setState(() {
-  //       _originalResin = changedOriginalResin;
-  //     });
-  //   } else {
-  //     Fluttertoast.showToast(msg: "樹脂が足りません");
-  //   }
-  // }
 
   /// 再出現日
   /// @param
@@ -212,248 +197,41 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
       body: ListView(
         padding: EdgeInsets.all(5),
         children: <Widget>[
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.indigo[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                children: <Widget>[
-                  Row(
-                    children: [
-                      Image.asset('images/Item_Magical_Crystal_Chunk.png', height: 32),
-                      Text(
-                        '鉱石',
-                        style: TextStyle(
-                          fontSize: 24,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Card(
-                    margin: EdgeInsets.all(5),
-                    color: Colors.green[100],
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Image.asset('images/Element_Anemo.png', height: 32),
-                                Text(
-                                  'モンド',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            _stoneRow('蒼風の高地', PreferenceKey.Windwail.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('望風山地', PreferenceKey.Stormbearer.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('風龍廃墟', PreferenceKey.Stormterror.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('軽策荘', PreferenceKey.Qingce.index, 'Item_Crystal_Chunk'),
-                          ],
-                        )
-                    ),
-                  ),
-                  Card(
-                    margin: EdgeInsets.all(5),
-                    color: Colors.orange[100],
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Image.asset('images/Element_Geo.png', height: 32),
-                                Text(
-                                  '璃月',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            _stoneRow('璃沙郊', PreferenceKey.Lisha.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('孤雲閣', PreferenceKey.Guyun.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('慶雲頂', PreferenceKey.Qingyun.index, 'Item_Crystal_Chunk'),
-                            _stoneRow('奥蔵山', PreferenceKey.Aocang.index, 'Item_Crystal_Chunk'),
-                          ],
-                        )
-                    ),
-                  ),
-                  Card(
-                    margin: EdgeInsets.all(5),
-                    color: Colors.purple[100],
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 5, right: 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                          children: <Widget>[
-                            Row(
-                              children: [
-                                Image.asset('images/Element_Electro.png', height: 32),
-                                Text(
-                                  '稲妻',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            _stoneRow('鳴神島', PreferenceKey.Narukami.index, 'Item_Amethyst_Lump'),
-                            _stoneRow('神無塚', PreferenceKey.Kannazuka.index, 'Item_Amethyst_Lump'),
-                            _stoneRow('ヤシオリ島', PreferenceKey.Yashiori.index, 'Item_Amethyst_Lump'),
-                            _stoneRow('海祇島', PreferenceKey.Watatsumi.index, 'Item_Amethyst_Lump'),
-                            _stoneRow('セイライ島', PreferenceKey.Seirai.index, 'Item_Amethyst_Lump'),
-                            _stoneRow('鶴観', PreferenceKey.Tsurumi.index, 'Item_Amethyst_Lump'),
-                          ],
-                        )
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          _genreCard(
+              'images/Item_Magical_Crystal_Chunk.png',
+              '鉱石', // 3日後の7時
+              false,
+              Colors.indigo[100]!,
+              _stornRow()
           ),
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.deepPurple[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                children: [
-                  Image.asset('images/Item_Artifact.png', height: 32),
-                  Text(
-                    '聖遺物', // 24h
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          _genreCard(
+              'images/Item_Artifact.png',
+              '聖遺物', // 24h
+              false,
+              Colors.deepPurple[100]!,
+              null
           ),
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.lightBlue[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                children: [
-                  Image.asset('images/Item_Wilderness_Rod.png', height: 32),
-                  Text(
-                    '釣り', // 3日後の5時
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          _genreCard(
+              'images/Item_Wilderness_Rod.png',
+              '釣り', // 3日後の5時
+              false,
+              Colors.lightBlue[100]!,
+              null
           ),
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.green[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // 均等に配置する
-                      children: [
-                        Row(
-                          children: [
-                            Image.asset('images/Item_Parametric_Transformer.png', height: 32),
-                            Text(
-                              '参量物質変化器', // 166h
-                              style: TextStyle(
-                                fontSize: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.notifications,
-                              color: Colors.grey,
-                              size: 28.0,
-                            ),
-                            Switch(
-                              value: notificationSetting['transformer']!,
-                              onChanged: (bool newValue) {
-                                setState(() { notificationSetting['transformer'] = newValue;});
-                                PreferenceKey.NotionTransformer.setBoolean(newValue);
-                                changeNotification(newValue, notionIdResource['transformer']!, pickedDateTime['transformer']!.add(Duration(hours: 166)) ,'参量物質変化器が再使用可能になりました');
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '変換', // 166h
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
-                            Text(
-                              // remainingTime(),
-                              'あと$transformTime',
-                              style: TextStyle(
-                                fontSize: 20,
-                              ),
-                            ),
-                            Padding(padding: EdgeInsets.all(3),),
-                            ElevatedButton(
-                              onPressed: () {
-                                pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
-                                PreferenceKey.Transformer.setDateTime(DateTime.now());
-                                createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
-                                setState(() { transformTime = repopTime(DateTime.now(), 166); });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.grey,
-                                elevation: 8,
-                              ),
-                              child: Text('変換'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ]
-              ),
-            ),
+          _genreCard(
+              'images/Item_Parametric_Transformer.png',
+              '参量物質変化器', // 166h
+              true,
+              Colors.green[100]!,
+              _transformerRow()
           ),
-          Card(
-            margin: EdgeInsets.all(5),
-            color: Colors.lightGreen[100],
-            child: Padding(
-              padding: EdgeInsets.only(left: 5, right: 5),
-              child: Row(
-                children: [
-                  Image.asset('images/Item_Serenitea_Pot.png', height: 32),
-                  Text(
-                    '栽培', // 70h
-                    style: TextStyle(
-                      fontSize: 24,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          _genreCard(
+            'images/Item_Serenitea_Pot.png',
+            '栽培', // 70h
+            false,
+            Colors.lightGreen[100]!,
+            null
+          )
           //           Column(children: [
           // Accordion('Section #1',
           // 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam bibendum ornare vulputate. Curabitur faucibus condimentum purus quis tristique.'),
@@ -478,28 +256,136 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   }
 
   // レイアウトコンポーネント //
-  // 天然樹脂の±ボタン
-  // Widget _changeResinButton(int increase) {
-  //   String text = '';
-  //   if (increase > 0) { text = '+$increase';}
-  //   else {text = '$increase';}
-  //   return Expanded(
-  //     flex: 1,
-  //     child: ElevatedButton(
-  //       onPressed: () {
-  //         _changeOriginalResin(increase);
-  //       },
-  //       style: ElevatedButton.styleFrom(
-  //         primary: Colors.grey,
-  //         elevation: 8,
-  //       ),
-  //       child: Text(text),
-  //     ),
-  //   );
-  // }
+  /// 鉱石とかの大分類
+  Card _genreCard(String iconPath, String title, bool notification, Color color, Widget? child) {
+    return Card(
+      margin: EdgeInsets.all(5),
+      color: color,
+      child: Padding(
+        padding: EdgeInsets.only(left: 5, right: 5),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // 均等に配置する
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(iconPath, height: 32),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (notification) Row( // TODO: 何の通知を出すかを切り分ける
+                    children: [
+                      Icon(
+                        Icons.notifications,
+                        color: Colors.grey,
+                        size: 28.0,
+                      ),
+                      Switch(
+                        value: notificationSetting['transformer']!,
+                        onChanged: (bool newValue) {
+                          setState(() { notificationSetting['transformer'] = newValue;});
+                          PreferenceKey.NotionTransformer.setBoolean(newValue);
+                          changeNotification(newValue, notionIdResource['transformer']!, pickedDateTime['transformer']!.add(Duration(hours: 166)) ,'参量物質変化器が再使用可能になりました');
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              if (child != null) child // TODO: 全部実装したらnull判定を消す
+            ]
+        ),
+      ),
+    );
+  }
 
-  // 鉱石の中の一行
-  Widget _stoneRow(String areaName, int areaIndex, String icon) {
+  /// 鉱石
+  Column _stornRow() {
+    return Column(
+        children: [
+          _stoneRegionCard(
+              'images/Element_Anemo.png',
+              'モンド',
+              Colors.green[100]!,
+              Column(
+                children: [
+                  _stoneAreaRow('蒼風の高地', PreferenceKey.Windwail.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('望風山地', PreferenceKey.Stormbearer.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('風龍廃墟', PreferenceKey.Stormterror.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('軽策荘', PreferenceKey.Qingce.index, 'Item_Crystal_Chunk'),
+                ],
+              )
+          ),
+          _stoneRegionCard(
+              'images/Element_Geo.png',
+              '璃月',
+              Colors.orange[100]!,
+              Column(
+                children: [
+                  _stoneAreaRow('璃沙郊', PreferenceKey.Lisha.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('孤雲閣', PreferenceKey.Guyun.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('慶雲頂', PreferenceKey.Qingyun.index, 'Item_Crystal_Chunk'),
+                  _stoneAreaRow('奥蔵山', PreferenceKey.Aocang.index, 'Item_Crystal_Chunk'),
+                ],
+              )
+          ),
+          _stoneRegionCard(
+              'images/Element_Electro.png',
+              '稲妻',
+              Colors.purple[100]!,
+              Column(
+                children: [
+                  _stoneAreaRow('鳴神島', PreferenceKey.Narukami.index, 'Item_Amethyst_Lump'),
+                  _stoneAreaRow('神無塚', PreferenceKey.Kannazuka.index, 'Item_Amethyst_Lump'),
+                  _stoneAreaRow('ヤシオリ島', PreferenceKey.Yashiori.index, 'Item_Amethyst_Lump'),
+                  _stoneAreaRow('海祇島', PreferenceKey.Watatsumi.index, 'Item_Amethyst_Lump'),
+                  _stoneAreaRow('セイライ島', PreferenceKey.Seirai.index, 'Item_Amethyst_Lump'),
+                  _stoneAreaRow('鶴観', PreferenceKey.Tsurumi.index, 'Item_Amethyst_Lump'),
+                ],
+              )
+          ),
+        ]
+    );
+  }
+
+  /// 鉱石 国ごと
+  Card _stoneRegionCard(String iconPath, String title, Color color, Column child) {
+    return Card(
+      margin: EdgeInsets.all(5),
+      color: color,
+      // child: Text('a'),
+      child: Padding(
+          padding: EdgeInsets.only(left: 5, right: 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch, // Columnの中身をmatch_parentsにする
+            children: <Widget>[
+              Row(
+                children: [
+                  Image.asset(iconPath, height: 32),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              child
+            ],
+          )
+      ),
+    );
+  }
+
+  /// 鉱石の中の一行
+  Row _stoneAreaRow(String areaName, int areaIndex, String icon) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -538,6 +424,47 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
                 child: Text('掘る'),
               ),
             ]
+        ),
+      ],
+    );
+  }
+
+  /// 変化器
+  Row _transformerRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '変換', // 166h
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        ),
+        Row(
+          children: [
+            // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
+            Text(
+              // remainingTime(),
+              'あと$transformTime',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            Padding(padding: EdgeInsets.all(3),),
+            ElevatedButton(
+              onPressed: () {
+                pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
+                PreferenceKey.Transformer.setDateTime(DateTime.now());
+                createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
+                setState(() { transformTime = repopTime(DateTime.now(), 166); });
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.grey,
+                elevation: 8,
+              ),
+              child: Text('変換'),
+            ),
+          ],
         ),
       ],
     );

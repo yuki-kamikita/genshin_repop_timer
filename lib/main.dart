@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'view/page/repop_viewer.dart';
+import 'view/page/repop_date_viewer.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
 
 
 // TODO: リファクタリング
-// RiverpodでViewModelみたいな状態管理をする
+// Riverpodは今更大変そうなので一旦諦め
 // modelを別ファイルにする
 // stringファイル作る
 
