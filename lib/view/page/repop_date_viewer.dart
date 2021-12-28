@@ -105,7 +105,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     // }
     // 栽培
     for (var i = PreferenceKey.GardeningVegetable.index; i <= PreferenceKey.GardeningMeadow.index; i++) {
-      listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
+      listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 70);
     }
     // 変化器
     listRepopTime[PreferenceKey.Transformer.index] = repopTime(await PreferenceKey.Transformer.getDateTime(), 166);
@@ -147,23 +147,39 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   /// 現状鉱石専用
   Future<void> editPickDate(BuildContext context, int areaIndex) async {
-    // TODO: showDateTimePicker作ろっかなぁ
     DateTime picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now().add(new Duration(days: -3)),
         lastDate: DateTime.now()
     ) ?? DateTime.now();
-    // TimeOfDay? time = await showTimePicker(
-    //   context: context,
-    //   initialTime: TimeOfDay.now()
-    // );
     picked = picked.add(new Duration(hours: 12)); // 0時だと前日扱いなので適当に12時にでもしとく
     setState(() {
-      // Fluttertoast.showToast(msg: "$picked");
       PreferenceKey.values[areaIndex].setDateTime(picked);
       listRepopDay[areaIndex] = repopDay(picked, 3, 7);
     });
+  }
+
+  Future<void> editPickDateTime(BuildContext context, int areaIndex, int interval) async {
+    DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime.now().add(new Duration(days: -7)),
+        lastDate: DateTime.now()
+    );
+    if (picked != null) {
+      TimeOfDay? time = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay(hour: 0, minute: 0)
+      );
+      if (time != null) {
+        picked = picked.add(new Duration(hours: time.hour, minutes: time.minute));
+        setState(() {
+          PreferenceKey.values[areaIndex].setDateTime(picked!);
+          listRepopTime[areaIndex] = repopTime(picked, interval);
+        });
+      }
+    }
   }
 
   // 通知予約
@@ -227,18 +243,19 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               Colors.deepPurple[100]!,
               Column(
                 children: [
-                _pickTimeRow('モンド', PreferenceKey.ArtifactMond, 24, '拾う'),
-                _pickTimeRow('璃月', PreferenceKey.ArtifactLiyue, 24, '拾う'),
-                _pickTimeRow('稲妻', PreferenceKey.ArtifactInazuma, 24, '拾う'),
-              ])
+                  _pickTimeRow('モンド', PreferenceKey.ArtifactMond, 24, '拾う'),
+                  _pickTimeRow('璃月', PreferenceKey.ArtifactLiyue, 24, '拾う'),
+                  _pickTimeRow('稲妻', PreferenceKey.ArtifactInazuma, 24, '拾う'),
+                ]
+              )
           ),
-          _genreCard(
-              'images/Item_Wilderness_Rod.png',
-              '釣り', // 3日後の5時
-              false,
-              Colors.lightBlue[100]!,
-              null
-          ),
+          // _genreCard(
+          //     'images/Item_Wilderness_Rod.png',
+          //     '釣り', // 3日後の5時
+          //     false,
+          //     Colors.lightBlue[100]!,
+          //     null
+          // ),
           _genreCard(
               'images/Item_Parametric_Transformer.png',
               '参量物質変化器', // 166h
@@ -252,11 +269,11 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               false,
               Colors.lightGreen[100]!,
               Column(
-                  children: [
-                    _pickTimeRow('素晴らしい野菜畑', PreferenceKey.GardeningVegetable, 70, '栽培'),
-                    _pickTimeRow('麗しい花畑', PreferenceKey.GardeningFlower, 70, '栽培'),
-                    _pickTimeRow('美しい水田', PreferenceKey.GardeningMeadow, 70, '栽培'),
-                  ]
+                children: [
+                  _pickTimeRow('素晴らしい野菜畑', PreferenceKey.GardeningVegetable, 70, '栽培'),
+                  _pickTimeRow('麗しい花畑', PreferenceKey.GardeningFlower, 70, '栽培'),
+                  _pickTimeRow('美しい水田', PreferenceKey.GardeningMeadow, 70, '栽培'),
+                ]
               )
           )
           //           Column(children: [
@@ -469,10 +486,15 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
         ),
         Row(
           children: [
-            Text(
-              'あと${listRepopTime[preferenceKey.index]}',
-              style: TextStyle(
-                fontSize: 20,
+            GestureDetector(
+              onTap: () {
+                editPickDateTime(context, preferenceKey.index, repopHour);
+              },
+              child: Text(
+                'あと${listRepopTime[preferenceKey.index]}',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
             ),
             Padding(padding: EdgeInsets.all(3),),

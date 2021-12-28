@@ -37,9 +37,7 @@ class MyApp extends StatelessWidget {
 // modelを別ファイルにする
 // stringファイル作る
 
-// TODO: 聖遺物（国ごと）
 // TODO: 釣り
-// TODO: 栽培
 // TODO: 派遣
 // TODO: ポケットワープポイント
 
