@@ -200,7 +200,6 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
         android: AndroidNotificationDetails(
           'genshin_repop_timer',
           '再出現通知',
-          '復活したときの通知',
         ),
         iOS: IOSNotificationDetails(),
       ),

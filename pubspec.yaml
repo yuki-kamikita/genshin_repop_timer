@@ -29,7 +29,7 @@ dependencies:
     sdk: flutter
 
   # 通知
-  flutter_local_notifications: ^8.2.0
+  flutter_local_notifications: ^9.1.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
