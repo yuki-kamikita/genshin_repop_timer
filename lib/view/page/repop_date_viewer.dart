@@ -32,7 +32,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'artifact': tz.TZDateTime.now(tz.UTC),
     'fishing': tz.TZDateTime.now(tz.UTC),
     'transformer': tz.TZDateTime.now(tz.UTC),
-    'cultivation': tz.TZDateTime.now(tz.UTC),
+    'gardening': tz.TZDateTime.now(tz.UTC),
   };
 
   // TODO: DataClass作成
@@ -42,7 +42,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'artifact': false,
     'fishing': false,
     'transformer': false,
-    'cultivation': false,
+    'gardening': false,
   };
 
   // TODO: リソースに移動
@@ -52,7 +52,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'artifact': 3,
     'fishing': 4,
     'transformer': 5,
-    'cultivation': 6
+    'gardening': 6
   };
 
   // lifecycle //
@@ -100,13 +100,13 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
       listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
     }
     // // 釣り
-    // for (var i = PreferenceKey.ArtifactMond.index; i < PreferenceKey.ArtifactInazuma.index; i++) {
+    // for (var i = PreferenceKey.ArtifactMond.index; i <= PreferenceKey.ArtifactInazuma.index; i++) {
     //   listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
     // }
-    // // 栽培
-    // for (var i = PreferenceKey.ArtifactMond.index; i < PreferenceKey.ArtifactInazuma.index; i++) {
-    //   listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
-    // }
+    // 栽培
+    for (var i = PreferenceKey.GardeningVegetable.index; i <= PreferenceKey.GardeningMeadow.index; i++) {
+      listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
+    }
     // 変化器
     listRepopTime[PreferenceKey.Transformer.index] = repopTime(await PreferenceKey.Transformer.getDateTime(), 166);
 
@@ -247,11 +247,17 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               _pickTimeRow('変換', PreferenceKey.Transformer, 166, '変換'),
           ),
           _genreCard(
-            'images/Item_Serenitea_Pot.png',
-            '栽培', // 70h
-            false,
-            Colors.lightGreen[100]!,
-            null
+              'images/Item_Serenitea_Pot.png',
+              '栽培', // 70h
+              false,
+              Colors.lightGreen[100]!,
+              Column(
+                  children: [
+                    _pickTimeRow('素晴らしい野菜畑', PreferenceKey.GardeningVegetable, 70, '栽培'),
+                    _pickTimeRow('麗しい花畑', PreferenceKey.GardeningFlower, 70, '栽培'),
+                    _pickTimeRow('美しい水田', PreferenceKey.GardeningMeadow, 70, '栽培'),
+                  ]
+              )
           )
           //           Column(children: [
           // Accordion('Section #1',

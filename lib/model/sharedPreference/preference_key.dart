@@ -29,7 +29,9 @@ enum PreferenceKey {
   ArtifactLiyue,
   ArtifactInazuma,
   Transformer, // 参量物質変化器
-  Cultivation,
+  GardeningVegetable, // 素晴らしい野菜畑
+  GardeningFlower, // 麗しい花畑
+  GardeningMeadow, // 美しい水田
   // ここから通知
   NotionTransformer // 変化器の通知 別のとこに分けたい
 }
