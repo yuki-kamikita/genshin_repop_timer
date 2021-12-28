@@ -22,8 +22,15 @@ enum PreferenceKey {
   Watatsumi,   // 海祇島
   Seirai,      // セイライ島
   Tsurumi,     // 鶴観
-  // OriginalResinCount, // 天然樹脂（使ってない）
+  FishMond,
+  FishLiyue,
+  FishInazuma,
+  ArtifactMond,
+  ArtifactLiyue,
+  ArtifactInazuma,
   Transformer, // 参量物質変化器
+  Cultivation,
+  // ここから通知
   NotionTransformer // 変化器の通知 別のとこに分けたい
 }
 

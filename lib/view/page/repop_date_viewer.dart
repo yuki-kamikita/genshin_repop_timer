@@ -21,7 +21,9 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   // int _originalResin = 0;
   // int _condensedResin = 0;
 
+  // 表示する値 //
   List<int> listRepopDay = List.filled(PreferenceKey.values.length, 0);
+  List<String> listRepopTime = List.filled(PreferenceKey.values.length, ""); // 分表示と時間表示を切り分ける為、仕方なくStringに
 
   // 鉱石分けたし、ここも整理しないと
   Map<String, tz.TZDateTime> pickedDateTime = {
@@ -53,8 +55,6 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'cultivation': 6
   };
 
-  String transformTime = "";
-
   // lifecycle //
   @override
   void initState() {
@@ -82,6 +82,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   }
 
   // 共通関数 //
+  // 初期化
   void readSharedPreference() async {
     // _originalResin = await PreferenceKey.OriginalResinCount.getInt(0);
 
@@ -89,12 +90,27 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     notificationSetting['transformer'] = await PreferenceKey.NotionTransformer.getBoolean(false);
 
     // 再出現日
-    for (var i = 0; i < 13; i++) { // 鉱石上詰め
+    // TODO: 追加したら手動でここにも追加
+    // 鉱石
+    for (var i = 0; i <= PreferenceKey.Tsurumi.index; i++) {
       listRepopDay[i] = repopDay(await PreferenceKey.values[i].getDateTime(), 3, 7);
     }
+    // 聖遺物
+    for (var i = PreferenceKey.ArtifactMond.index; i <= PreferenceKey.ArtifactInazuma.index; i++) {
+      listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
+    }
+    // // 釣り
+    // for (var i = PreferenceKey.ArtifactMond.index; i < PreferenceKey.ArtifactInazuma.index; i++) {
+    //   listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
+    // }
+    // // 栽培
+    // for (var i = PreferenceKey.ArtifactMond.index; i < PreferenceKey.ArtifactInazuma.index; i++) {
+    //   listRepopTime[i] = repopTime(await PreferenceKey.values[i].getDateTime(), 24);
+    // }
+    // 変化器
+    listRepopTime[PreferenceKey.Transformer.index] = repopTime(await PreferenceKey.Transformer.getDateTime(), 166);
 
     pickedDateTime['transformer'] = await PreferenceKey.Transformer.getTZDateTime();
-    transformTime = repopTime(await PreferenceKey.Transformer.getDateTime(), 166);
 
     setState(() {});
   }
@@ -202,14 +218,19 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               '鉱石', // 3日後の7時
               false,
               Colors.indigo[100]!,
-              _stornRow()
+              _stornColumn()
           ),
           _genreCard(
               'images/Item_Artifact.png',
               '聖遺物', // 24h
               false,
               Colors.deepPurple[100]!,
-              null
+              Column(
+                children: [
+                _pickTimeRow('モンド', PreferenceKey.ArtifactMond, 24, '拾う'),
+                _pickTimeRow('璃月', PreferenceKey.ArtifactLiyue, 24, '拾う'),
+                _pickTimeRow('稲妻', PreferenceKey.ArtifactInazuma, 24, '拾う'),
+              ])
           ),
           _genreCard(
               'images/Item_Wilderness_Rod.png',
@@ -223,7 +244,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               '参量物質変化器', // 166h
               true,
               Colors.green[100]!,
-              _transformerRow()
+              _pickTimeRow('変換', PreferenceKey.Transformer, 166, '変換'),
           ),
           _genreCard(
             'images/Item_Serenitea_Pot.png',
@@ -307,7 +328,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   }
 
   /// 鉱石
-  Column _stornRow() {
+  Column _stornColumn() {
     return Column(
         children: [
           _stoneRegionCard(
@@ -429,23 +450,21 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     );
   }
 
-  /// 変化器
-  Row _transformerRow() {
+  /// あと○時間/分の一行
+  Row _pickTimeRow(String title, PreferenceKey preferenceKey, int repopHour, String pick) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          '変換', // 166h
+          title,
           style: TextStyle(
             fontSize: 20,
           ),
         ),
         Row(
           children: [
-            // if (listRepopDay[areaKey] == 0) Image.asset('images/$icon.png', height: 32),
             Text(
-              // remainingTime(),
-              'あと$transformTime',
+              'あと${listRepopTime[preferenceKey.index]}',
               style: TextStyle(
                 fontSize: 20,
               ),
@@ -453,25 +472,21 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
             Padding(padding: EdgeInsets.all(3),),
             ElevatedButton(
               onPressed: () {
-                pickedDateTime['transformer'] = tz.TZDateTime.from(DateTime.now(), tz.UTC); // これ要らなくね
-                PreferenceKey.Transformer.setDateTime(DateTime.now());
-                createNotification(notionIdResource['transformer']!, tz.TZDateTime.now(tz.UTC).add(Duration(hours: 166)), '参量物質変化器が再使用可能になりました');
-                setState(() { transformTime = repopTime(DateTime.now(), 166); });
+                preferenceKey.setDateTime(DateTime.now());
+                setState(() {
+                  listRepopTime[preferenceKey.index] = repopTime(DateTime.now(), repopHour);
+                });
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.grey,
                 elevation: 8,
               ),
-              child: Text('変換'),
+              child: Text(pick),
             ),
           ],
         ),
       ],
     );
   }
-  //
-  // Widget setIcon(String icon) {
-  //   return Image.asset('images/$icon.png', height: 32);
-  // }
 
 }
