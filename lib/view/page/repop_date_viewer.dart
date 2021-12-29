@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'dart:io';
 import '../../model/sharedPreference/preference_key.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../widget/accordion.dart';
 import '../widget/drawable_text.dart';
 
@@ -17,10 +19,6 @@ class RepopViewerPage extends StatefulWidget {
 }
 
 class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingObserver {
-  // 変数定義 //
-  // int _originalResin = 0;
-  // int _condensedResin = 0;
-
   // 表示する値 //
   List<int> listRepopDay = List.filled(PreferenceKey.values.length, 0);
   List<String> listRepopTime = List.filled(PreferenceKey.values.length, ""); // 分表示と時間表示を切り分ける為、仕方なくStringに
@@ -55,12 +53,15 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
     'gardening': 6
   };
 
+  late BannerAd myBanner;
+
   // lifecycle //
   @override
   void initState() {
     super.initState();
     readSharedPreference();
     WidgetsBinding.instance?.addObserver(this);
+    loadAdMob();
   }
 
   @override
@@ -82,10 +83,21 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   }
 
   // 共通関数 //
+  void loadAdMob() {
+    String adId = Platform.isAndroid ? "ca-app-pub-1271858702999591/3523686779" : "ca-app-pub-1271858702999591/9865733844";
+    String testAdId = Platform.isAndroid ? "ca-app-pub-3940256099942544/6300978111" : "ca-app-pub-3940256099942544/2934735716";
+    myBanner = BannerAd(
+      // adUnitId: adId, // 本番用
+      adUnitId: testAdId, // テスト用ID
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(),
+    );
+    myBanner.load();
+  }
+
   // 初期化
   void readSharedPreference() async {
-    // _originalResin = await PreferenceKey.OriginalResinCount.getInt(0);
-
     // 通知設定
     notificationSetting['transformer'] = await PreferenceKey.NotionTransformer.getBoolean(false);
 
@@ -274,7 +286,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
                   _pickTimeRow('美しい水田', PreferenceKey.GardeningMeadow, 70, '栽培'),
                 ]
               )
-          )
+          ),
           //           Column(children: [
           // Accordion('Section #1',
           // 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam bibendum ornare vulputate. Curabitur faucibus condimentum purus quis tristique.'),
@@ -294,6 +306,12 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
           //         child: Text('通知テスト'),
           //       )
         ],
+      ),
+      bottomNavigationBar: Container(
+        alignment: Alignment.center,
+        child: AdWidget(ad: myBanner),
+        width: myBanner.size.width.toDouble(),
+        height: myBanner.size.height.toDouble(),
       ),
     );
   }
