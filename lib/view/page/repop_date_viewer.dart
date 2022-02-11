@@ -25,14 +25,13 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   // 鉱石分けたし、ここも整理しないと
   Map<String, tz.TZDateTime> pickedDateTime = {
-    'resin': tz.TZDateTime.now(tz.UTC),
-    'stone': tz.TZDateTime.now(tz.UTC),
-    'artifact': tz.TZDateTime.now(tz.UTC),
-    'fishing': tz.TZDateTime.now(tz.UTC),
-    'transformer': tz.TZDateTime.now(tz.UTC),
-    'gardening': tz.TZDateTime.now(tz.UTC),
+    'resin': tz.TZDateTime.now(tz.local),
+    'stone': tz.TZDateTime.now(tz.local),
+    'artifact': tz.TZDateTime.now(tz.local),
+    'fishing': tz.TZDateTime.now(tz.local),
+    'transformer': tz.TZDateTime.now(tz.local),
+    'gardening': tz.TZDateTime.now(tz.local),
   };
-
   // TODO: DataClass作成
   Map<String, bool> notificationSetting = {
     'resin': false,
@@ -196,7 +195,10 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   // 通知予約
   // TODO: この関数の中で石とか変化機とかごとに分岐させて各々時間を作りたい
-  Future<void> createNotification(int notionId, tz.TZDateTime dateTime, String text) {
+  Future<void>? createNotification(int notionId, tz.TZDateTime dateTime, String text) {
+    if (dateTime.isBefore(tz.TZDateTime.now(tz.local))) { // 過去の日付だったら何もしない
+      return null;
+    }
     final flnp = FlutterLocalNotificationsPlugin();
     return flnp.initialize(
       InitializationSettings(
@@ -287,24 +289,24 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
                 ]
               )
           ),
-          //           Column(children: [
-          // Accordion('Section #1',
-          // 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam bibendum ornare vulputate. Curabitur faucibus condimentum purus quis tristique.'),
-          // Accordion('Section #2',
-          // 'Fusce ex mi, commodo ut bibendum sit amet, faucibus ac felis. Nullam vel accumsan turpis, quis pretium ipsum. Pellentesque tristique, diam at congue viverra, neque dolor suscipit justo, vitae elementum leo sem vel ipsum'),
-          // Accordion('Section #3',
-          // 'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
-          // ]),
-          //       ElevatedButton(
-          //         onPressed: () {
-          //           createNotification(0, tz.TZDateTime.now(tz.UTC).add(Duration(seconds: 3)), 'テスト');
-          //         },
-          //         style: ElevatedButton.styleFrom(
-          //           primary: Colors.grey,
-          //           elevation: 8,
-          //         ),
-          //         child: Text('通知テスト'),
-          //       )
+        // Column(children: [
+        //   Accordion('Section #1',
+        //   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam bibendum ornare vulputate. Curabitur faucibus condimentum purus quis tristique.'),
+        //   Accordion('Section #2',
+        //   'Fusce ex mi, commodo ut bibendum sit amet, faucibus ac felis. Nullam vel accumsan turpis, quis pretium ipsum. Pellentesque tristique, diam at congue viverra, neque dolor suscipit justo, vitae elementum leo sem vel ipsum'),
+        //   Accordion('Section #3',
+        //   'Nulla facilisi. Donec a bibendum metus. Fusce tristique ex lacus, ac finibus quam semper eu. Ut maximus, enim eu ornare fringilla, metus neque luctus est, rutrum accumsan nibh ipsum in erat. Morbi tristique accumsan odio quis luctus.'),
+        //   ]),
+          ElevatedButton(
+            onPressed: () {
+              createNotification(0, tz.TZDateTime.now(tz.local).add(Duration(seconds: 3)), 'テスト');
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.grey,
+              elevation: 8,
+            ),
+            child: Text('通知テスト'),
+          )
         ],
       ),
       bottomNavigationBar: Container(

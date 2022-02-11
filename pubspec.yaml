@@ -33,6 +33,7 @@ dependencies:
 
   # 通知
   flutter_local_notifications: ^9.1.5
+  timezone: ^0.8.0
 
   # admob
   google_mobile_ads: ^1.0.1

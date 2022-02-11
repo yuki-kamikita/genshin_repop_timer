@@ -102,8 +102,7 @@ extension PreferenceKeyEx on PreferenceKey {
 
   Future<tz.TZDateTime> getTZDateTime() async {
     return tz.TZDateTime
-        .parse(tz.UTC, await getString('1970-01-01'))
-        .add(Duration(hours: 9)); // 日本時間に変換
+        .parse(tz.local, await getString('1970-01-01'));
   }
 
 }
