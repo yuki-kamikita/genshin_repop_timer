@@ -195,7 +195,11 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
 
   // 通知予約
   // TODO: この関数の中で石とか変化機とかごとに分岐させて各々時間を作りたい
-  Future<void>? createNotification(int notionId, tz.TZDateTime dateTime, String text) {
+  Future<void>? createNotification(int notionId, tz.TZDateTime dateTime, String text) async {
+    if (!await PreferenceKey.NotionTransformer.getBoolean(false)) { // 通知offだったら作らない TODO: どの通知かで振り分ける
+      return null;
+    }
+
     if (dateTime.isBefore(tz.TZDateTime.now(tz.local))) { // 過去の日付だったら何もしない
       return null;
     }
@@ -274,7 +278,7 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
               '参量物質変化器', // 166h
               true,
               Colors.green[100]!,
-              _pickTimeRow('変換', PreferenceKey.Transformer, 166, '変換'),
+              _pickTimeRow('変換', PreferenceKey.Transformer, 166, '変換', true),
           ),
           _genreCard(
               'images/Item_Serenitea_Pot.png',
@@ -493,7 +497,13 @@ class _RepopViewerPageState extends State<RepopViewerPage> with WidgetsBindingOb
   }
 
   /// あと○時間/分の一行
-  Row _pickTimeRow(String title, PreferenceKey preferenceKey, int repopHour, String pick) {
+  Row _pickTimeRow(String title, PreferenceKey preferenceKey, int repopHour, String pick, [bool isNotify = false]) {
+    if (isNotify) createNotification(
+        notionIdResource['transformer']!,
+        pickedDateTime['transformer']!.add(Duration(hours: 166)),
+        '参量物質変化器が再使用可能になりました'
+    );
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

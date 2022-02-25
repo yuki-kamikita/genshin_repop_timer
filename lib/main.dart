@@ -52,7 +52,5 @@ class MyApp extends StatelessWidget {
 // TODO: 派遣
 // TODO: ポケットワープポイント
 
-// TODO: 編集
-
 // 多言語対応
 // 日本時間以外への対応

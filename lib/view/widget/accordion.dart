@@ -28,8 +28,7 @@ class _AccordionState extends State<Accordion> {
             },
           ),
         ),
-        _showContent
-            ? Container(
+        _showContent ? Container(
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
           child: Text(widget.content),
         )
